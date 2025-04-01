@@ -1,4 +1,4 @@
-# EasyChatDM - Demonstrates creating simple MCP tools
+# EasyChatDM - Demonstrates creating a simple MCP tools
 
 Example MCP Server tools for playing D&amp;D with generative AIs. These tools are oracles that are used to determine 
 random yes/no questions but also descriptions, events, NPCs, etc. They are "random tables" to use when you want to 
