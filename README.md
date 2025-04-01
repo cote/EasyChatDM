@@ -7,8 +7,10 @@ purposes so little attention is given to good code design.
 
 These tools are MCP Server tools that will work with Claude desktop and other MCP Clients. They're written in
 Spring AI MCP. This project is for education, so no consideration is given to good design. Instesd, the code is
-written to make it easy to follow step-by-step how to create tools. See [the ChatDM project](https://github.com/cote/chatdm/tree/main)) for a more
-complex, somewhat better designed version of this EasyChatDM.
+written to make it easy to follow step-by-step how to create tools. 
+
+See [the ChatDM project](https://github.com/cote/chatdm/tree/main) for a more
+complex, feature-ful somewhat better designed version of this EasyChatDM.
 
 Here's [part one of a video series](https://www.youtube.com/watch?v=iROihhd_OiI) going over all this. Keep an eye on 
 [the playlist](https://www.youtube.com/playlist?list=PLk_5VqpWEtiWA4NtTC_QwTofEpd34fRFx) for three or five more on this 
