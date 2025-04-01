@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "easychatdm": {
+      "command": "java",
+      "args": [
+        "-jar",
+        "/Users/cote/projects/EasyChatDM/target/EasyChatDM-0.0.1-SNAPSHOT.jar"
+      ],
+      "env": {
+        "EASY_CHATDM_AUTHOR": "Cote"
+      }
+    }
+  }
+}
