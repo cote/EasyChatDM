@@ -1,0 +1,1 @@
+Claude's directory is: ~/Library/Application\ Support/Claude/

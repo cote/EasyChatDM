@@ -7,6 +7,7 @@ import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,12 @@ public class Oracle {
     private final Logger logger = LoggerFactory.getLogger(Oracle.class);
 
     private final Random random = new Random();
+
+    private final ChatDMDir chatDMDir;
+
+    public Oracle(ChatDMDir chatDMDir) {
+        this.chatDMDir = chatDMDir;
+    }
 
     // Tool name cannot have spaces. Start EasyChatDM to make searching logs easier.
     // Can't use & in MCP, so we type DnD instead of D&D
@@ -47,7 +54,7 @@ public class Oracle {
                 "Strong no", "No", "No", "No", "Weak no",
                 "Weak yes", "Yes", "Yes", "Yes", "Strong yes"
         };
-        String answer = answers[random.nextInt(answers.length)];
+        String answer = pickRandom(answers);
 
         logger.info("Deterministic Oracle called: {} -> {}", questionContext, answer);
 
@@ -75,48 +82,67 @@ public class Oracle {
                 "Yes, but...", "Yes, for now", "Yes, apparently", "Yes, absolutely"
         };
 
-        String answer = answers[random.nextInt(answers.length)];
+        String answer = pickRandom(answers);
 
         logger.info("Deterministic Oracle called: {} -> {}", questionContext, answer);
 
         return Map.of("subjective oracle answer", answer);
     }
 
+    @Tool(name = "EasyChatDM_NPC_Motivation",
+            description = "Use this to determine an NPC's current motivation, mindset, and overall mood.")
+    public String npcMotivation() {
+        String[] motivations = {"sad", "angry", "calm", "happy", "anxious"};
+        return pickRandom(motivations);
+    }
+
+    @Tool(name = "EasyChatDM_NPC_Conversations",
+            description = """
+                    Use this oracle to come up with a with conversation topics for NPCs.
+                    These could be used to start conversations, if a conversation is stalled out, 
+                    to randomly chance the conversations, or whatever you see fit for it.
+                    """
+    )
+    public String conversations() throws IOException {
+        // Inspired and extended from the Juice Oracle: https://thunder9861.itch.io/juice-oracle
+        List<String> lines = chatDMDir.getAllLines("npc_conversations.txt");
+        return pickRandom(lines);
+    }
+
     /**
-     * An oracle that gives inspiration for how something looks.
-     * The list of options of loaded from the resource /oracle_tables/pum_looks.txt
-     * which is based on the PUM description/looks table,
-     * found <a href="https://github.com/saif-ellafi/play-by-the-writing/blob/main/tables/pum_looks.txt">here</a> as plain text.
+     * An oracle that gives inspiration for how something looks. The list of options of loaded from the resource
+     * /oracle_tables/pum_looks.txt which is based on the PUM description/looks table, found <a
+     * href="https://github.com/saif-ellafi/play-by-the-writing/blob/main/tables/pum_looks.txt">here</a> as plain text.
      *
      * @param questionContext
      * @return answer.
      */
-
     @Tool(name = "EasyChatDM_description_looks",
             description = """
                     When you want to determine how something looks use this oracle to give inspiration for 
                     detail, appearance, impression, or other things related to a description based on looks
                     """)
-    public Map descriptionLooksOracle(@ToolParam(description = "The context of this question: why are you doing this check and what might you do with the result. For example, what are you describing.",
+    public String descriptionLooksOracle(@ToolParam(description = "The context of this question: why are you doing this check and what might you do with the result. For example, what are you describing.",
             required = true)
-                                      String questionContext) {
+                                         String questionContext)
+            throws IOException {
         // Return one of: https://github.com/saif-ellafi/play-by-the-writing/blob/main/tables/pum_looks.txt
-        String resourcePath = "/oracle_tables/pum_looks.txt";
-
-        InputStream resourceAsStream = getClass().getResourceAsStream(resourcePath);
-
-        if (resourceAsStream == null) {
-            logger.error("Could not find resource {}. Returning default.", resourcePath);
-            return Map.of("description looks", "gritty");
-        }
-
-        BufferedReader reader = new BufferedReader(new java.io.InputStreamReader(resourceAsStream));
-        List<String> looks = reader.lines().toList();
-        logger.debug("Loaded description looks from {} with value {}", resourceAsStream, looks);
-
-        String look = looks.get(random.nextInt(looks.size()));
-
-        return Map.of("description looks oracle answer", look);
+        List<String> lines = chatDMDir.getAllLines("pum_looks.txt");
+        return pickRandom(lines);
     }
+
+
+    private String pickRandom(List<String> lines) {
+        if (!lines.isEmpty()) {
+            return lines.get(random.nextInt(lines.size()));
+        } else {
+            return "";
+        }
+    }
+
+    private String pickRandom(String[] lines) {
+        return pickRandom(List.of(lines));
+    }
+
 
 }

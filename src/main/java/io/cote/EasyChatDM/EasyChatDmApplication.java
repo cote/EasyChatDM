@@ -27,4 +27,5 @@ public class EasyChatDmApplication {
     public List<ToolCallback> oracles(Oracle tool) {
         return List.of(ToolCallbacks.from(tool));
     }
+
 }

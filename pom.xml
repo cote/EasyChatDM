@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>io.cote</groupId>
 	<artifactId>EasyChatDM</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>EasyChatDM</name>
 	<description>MCP tools to help play DnD</description>
 	<url/>

@@ -1,0 +1,35 @@
+Blacksmith - A burly man hammers away at glowing metal, surrounded by an array of tools, horseshoes, and simple weapons. The heat from his forge creates a pocket of warmth in the market.
+Fletcher - Feathers of various colors and sizes hang from strings above this stall where a woman with calloused fingers carefully binds arrow shafts. She tests each finished arrow by rolling it across her workbench.
+Herbalist - Bundles of dried plants hang from the awning, and small clay pots contain fresh specimens. The elderly proprietor knows the name and use of every leaf and root, legitimate or otherwise.
+Cobbler - Shoes and boots in various states of completion line the shelves of this modest stall. The leatherworker measures feet with practiced precision and can tell a person's profession by their gait.
+Candlemaker - Wax drips into molds as the artisan works. Candles of all sizes, colors, and scents are displayed, from simple tallow to expensive beeswax. Some are carved with decorative patterns.
+Weaver - A loom occupies most of this space where a weaver creates fabrics of different patterns. Bolts of finished cloth are stacked nearby, ranging from rough homespun to finer textiles.
+Spice Merchant - Exotic aromas waft from this stall lined with small burlap sacks and glass jars containing colorful powders. The merchant knows which combination will enliven any dish.
+Butcher - Blood-stained wooden block and sharp knives mark this stall where various cuts of meat hang from hooks. The butcher's apprentice shoos away persistent flies while the master prepares cuts for customers.
+Baker - The heavenly smell of fresh bread draws crowds to this stall. Loaves of different shapes and sizes cool on racks, while sweet pastries are arranged temptingly at the front.
+Cooper - Barrels, buckets, and other wooden vessels in various stages of completion surround this craftsman who skillfully shapes staves and fits metal bands around them.
+Scribe - Surrounded by parchment, quills, and inkpots, this learned individual offers letter-writing services for the illiterate and sells writing supplies to those who can afford such luxuries.
+Cheese Monger - Wheels and wedges of cheese with different colors and textures fill this stall. The proprietor offers samples on the tip of his knife and knows which pairs best with what wine.
+Potter - Clay dust covers everything in this space where vessels of all shapes and purposes are displayed. The craftsman's hands are permanently stained as they shape wet clay on a wheel.
+Fishmonger - Fresh catches lie on beds of ice as the seller loudly proclaims their quality. The briny smell attracts both customers and cats hoping for scraps.
+Rope Maker - Coils of rope in various thicknesses hang from hooks. The artisan twists fibers together with practiced motions, creating sturdy rope for every need from clotheslines to ship rigging.
+Toy Maker - Wooden figures, dolls with painted faces, and simple games attract children who linger longingly. The elderly craftsman often gives away small trinkets to the poorest children.
+Wine Merchant - Casks and bottles of various vintages fill the shelves. The merchant offers small tastings from copper cups and speaks eloquently about flavors and regions.
+Milliner - Hats of all styles are displayed on wooden head forms. Feathers, ribbons, and other decorations can be added to customize each purchase to the buyer's taste.
+Tanner - Located downwind due to the smell, this stall displays leather goods of all kinds. The artisan works hides into supple material for clothing, armor, and accessories.
+Honey Seller - Jars of amber liquid catch the sunlight as bees buzz around the sweet offerings. The beekeeper's arms bear the marks of stings, badges of pride in their dangerous craft.
+Wool Merchant - Sacks of raw wool and spun yarn in natural colors fill this stall. The merchant can tell you which sheep from which hills produced each batch.
+Cartographer - Maps of varying accuracy and artistry are displayed under paperweights. The mapmaker offers to create custom charts for travelers or update existing maps with new discoveries.
+Glassblower - A small portable furnace glows hot as the artisan shapes molten glass into delicate vessels. Finished pieces catch the light in dazzling displays of craftsmanship.
+Silversmith - Under watchful eyes, fine jewelry and eating utensils gleam on velvet cloths. The smith works with tiny tools to create intricate designs for wealthy patrons.
+Fortune Teller - Obscured by hanging beads and colorful scarves, an enigmatic figure reads cards, palms, or tea leaves. Whether genuine seer or clever fraud, their predictions often contain kernels of truth.
+Potion Vendor - Bottles of bubbling liquids in vibrant colors line the shelves of this magical stall. The alchemist claims cures for everything from baldness to broken hearts, though results may vary.
+Familiar Merchant - Small magical creatures peer from cages or perch on stands. The mysterious proprietor matches aspiring magic-users with their perfect arcane companion after asking probing questions.
+Spell Component Seller - Organized chaos reigns in this stall filled with bizarre ingredients. Dragon scales, phoenix feathers, and more mundane items like specially prepared chalk and candles are meticulously labeled.
+Enchanted Trinket Dealer - Minor magical items that produce light, clean clothes, or play music when wound fill this curiosity shop. Nothing powerful enough to attract thieves, but useful for everyday convenience.
+Divination Supplies - Specialized tools for fortune-telling and communing with otherworldly entities are displayed carefully. Crystal balls, specially carved rune sets, and rare incense appeal to those seeking cosmic answers.
+Beast Handler - Exotic but domesticated creatures from distant lands are presented for sale. The handler demonstrates their unique abilities and provides care instructions to potential buyers.
+Scroll Scrivener - A wizard's apprentice carefully copies minor spells onto parchment under the supervision of their master, selling these one-use magical writings to travelers who lack arcane training.
+Golem Repair - A dwarf tinkers with small constructs, replacing gears and rewiring magical connections. Signs advertise maintenance services for household automatons and security constructs.
+Soul Gem Assessor - Behind a heavy curtain, a solemn practitioner evaluates crystallized souls, determining their quality and magical potential while offering discreet purchase or exchange services.
+Dimensional Tailor - A seamstress with extra joints in her fingers sews pockets that are bigger on the inside, creating bags and pouches with impossible storage capacity for discerning adventurers.
