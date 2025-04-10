@@ -28,4 +28,5 @@ public class EasyChatDmApplication {
         return List.of(ToolCallbacks.from(tool));
     }
 
+
 }

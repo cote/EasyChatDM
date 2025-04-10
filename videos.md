@@ -1,0 +1,1 @@
+- Current, "Logging in Descript": need to show the log output from Claude, re-record that since I had the wrong project  building, and, thus, no logging.

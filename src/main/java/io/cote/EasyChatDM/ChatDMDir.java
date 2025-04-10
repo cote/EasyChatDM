@@ -30,16 +30,21 @@ public class ChatDMDir {
 
     @PostConstruct
     private void init() throws IOException {
-        // TK could do some checking and create a dir if it
-        // doesn't exist. At least log it.
         easyChatDir = Path.of(dirProperty);
         // ensure it exists
         Files.createDirectories(easyChatDir);
         logger.debug("EasyChatDM dir is {}", easyChatDir);
     }
 
-    Map<String,List<String>> loadBundleDir(String bundleName)
-    {
+    private Map<String, List<String>> loadBundleDir(String bundleName) {
+        /*
+        Working on this.
+        It will load all the bundles in a directory (like oracles) so that you don't
+        need to load them each time.
+        Also, it will allow us to make a dynamic oracle based on which files are there,
+        which will make us need to create the listOracles() tool
+        */
+
         // We only want the name of a subdirectory to look at,
         // not an absolute path, going up a directory, or a file.
         // If the directory does not exist (or is actually a fle),
@@ -53,14 +58,12 @@ public class ChatDMDir {
         logger.debug("bundle dir is now {}", bundleDir);
         if (containsUpwardTraversal(bundleDir)) {
             throw new IllegalArgumentException("Bundle name cannot contain upward traversal: " + bundleName);
-        }
-        else if (!Files.isDirectory(bundleDir)) {
+        } else if (!Files.isDirectory(bundleDir)) {
             logger.debug("bundle dir {} does not exist or is not a directory", bundleDir);
             return Collections.emptyMap();
         }
 
         // All good!
-
         try (Stream<Path> paths = Files.walk(bundleDir)) {
             return paths
                     .filter(Files::isRegularFile)
@@ -121,6 +124,7 @@ public class ChatDMDir {
             // isDirectory checks for directory existence as well.
             return Collections.emptyList();
         } else if (!Files.exists(fullPath)) {
+            logger.debug("File {} requested does not exist", fullPath);
             // finally, does the actual file exist?
             return Collections.emptyList();
         }
@@ -136,6 +140,26 @@ public class ChatDMDir {
 
         return Collections.unmodifiableList(cleanedLines);
     }
+
+    /**
+     * Writes a file in the chatdmdir. <code>fileName</code> can include directories.</code>
+     *
+     * @param fileName
+     * @param content
+     * @throws IOException
+     */
+    void writeFile(String fileName, String content) throws IOException {
+        Path fullPath = easyChatDir.resolve(fileName);
+        if (containsUpwardTraversal(fullPath)) {
+            throw new IllegalArgumentException("File name cannot contain upward traversal: " + fileName);
+        }
+
+        Files.writeString(fullPath, content);
+    }
+
+//    void appendFile(String fileName, String content) throws IOException {
+//
+//    }
 
     /**
      * Checks if a path contains any directory traversal elements.
