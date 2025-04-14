@@ -4,12 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
+
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.TestPropertySource;
+
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,6 +30,36 @@ class ChatDMDirTest {
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
         registry.add("easychatdm.dir", () -> tempDir.toString());
+    }
+
+    @Test
+    void testReadFile() throws IOException {
+        Path file = tempDir.resolve("testReadFile.txt");
+        String fileContents = """
+                # for ChatDMDirTest#testReadFile()
+                # This is a comment
+                line1
+                line2
+                # another comment
+                line3
+                """;
+        Files.writeString(file, fileContents);
+
+        String content = chatDMDir.readFile("testReadFile.txt");
+        assertThat(content).isEqualToIgnoringWhitespace(fileContents);
+
+    }
+
+    @Test
+    void testWriteFile() throws IOException {
+        String contents = "# for ChatDMDirTest#testWriteFile\nline 1\nline 2";
+        chatDMDir.writeFile("testWriteFile.txt", "test content");
+
+        chatDMDir.writeFile("testWriteFile.txt", contents);
+
+        Path testFile = tempDir.resolve("testWriteFile.txt");
+        Files.readString(testFile);
+        assertThat(Files.readString(testFile)).isEqualToIgnoringWhitespace(contents);
     }
 
     @Test

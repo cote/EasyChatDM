@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -45,14 +46,8 @@ public class ChatDMDir {
         which will make us need to create the listOracles() tool
         */
 
-        // We only want the name of a subdirectory to look at,
-        // not an absolute path, going up a directory, or a file.
-        // If the directory does not exist (or is actually a fle),
-        // we just return an empty map
         Path bundleDirFragment = Path.of(bundleName);
-        if (bundleDirFragment.isAbsolute()) {
-            throw new IllegalArgumentException("Bundle name must be relative to chatdmdir");
-        }
+        throwIfInvalidFile(bundleDirFragment);
 
         Path bundleDir = easyChatDir.resolve(bundleDirFragment);
         logger.debug("bundle dir is now {}", bundleDir);
@@ -106,21 +101,14 @@ public class ChatDMDir {
 
         logger.debug("Attempting to loading file {}", fileName);
 
-        // Some security and validation:
-        // (1) Keep requests in the DM dir, no looking outside the dir.
-        // (2) We only want files, not directories.
-        // (3) And we want them to actually exist.
-        if (fileName.isAbsolute()) {
-            throw new IllegalArgumentException(String.format("File name must be relative to chatdmdir", easyChatDir, fileName));
-        }
+        // Will check for absolute filename and upwards traversal
+        // for basic security checks.
+        throwIfInvalidFile(fileName);
 
         // Now we can try the full path.
-
         Path fullPath = easyChatDir.resolve(fileName);
 
-        if (containsUpwardTraversal(fullPath)) {
-            throw new IllegalArgumentException("File name cannot contain upward traversal: " + fileName);
-        } else if (Files.isDirectory(fullPath)) {
+        if (Files.isDirectory(fullPath)) {
             // isDirectory checks for directory existence as well.
             return Collections.emptyList();
         } else if (!Files.exists(fullPath)) {
@@ -142,24 +130,84 @@ public class ChatDMDir {
     }
 
     /**
-     * Writes a file in the chatdmdir. <code>fileName</code> can include directories.</code>
+     * Convenience method for {@link #readFile(Path)}
+     */
+    String readFile(String fileName) throws IOException {
+        return readFile(Path.of(fileName));
+    }
+
+    /**
+     * Reads the file from the dmDir. Will throw {@linke IllegalArgumentException} if the file is outside of the DM
+     * Dir.
+     *
+     * @param fileName
+     * @return the contents of the file as a {@link String}.
+     */
+    String readFile(Path fileName) throws IOException {
+
+        throwIfInvalidFile(fileName);
+        // all good
+        Path fullPath = easyChatDir.resolve(fileName);
+        logger.debug("Reading file {}", fullPath);
+        return Files.readString(fullPath);
+
+    }
+
+    /**
+     * Convenience method for {@link #writeFile(Path, String)}}.
      *
      * @param fileName
      * @param content
      * @throws IOException
      */
     void writeFile(String fileName, String content) throws IOException {
+        writeFile(Path.of(fileName), content);
+    }
+
+    /**
+     * Writes a file in the chatdmdir. <code>fileName</code> can include directories.</code>
+     *
+     * @param fileName
+     * @param content
+     * @throws IOException
+     */
+    void writeFile(Path fileName, String content) throws IOException {
+
+        // Will check for absolute filename and upwards traversal
+        // for basic security checks.
+        throwIfInvalidFile(fileName);
+
+        // Now we can try the full path.
         Path fullPath = easyChatDir.resolve(fileName);
-        if (containsUpwardTraversal(fullPath)) {
+
+        // make sure the directories exist.
+        Files.createDirectories(fullPath.getParent());
+
+        Files.writeString(fullPath, content, StandardCharsets.UTF_8);
+        logger.debug("Wrote file {}", fullPath);
+    }
+
+
+    /**
+     * Returns the top-level DM directory.
+     *
+     * @return the
+     */
+    Path getChatDMDir() {
+        return easyChatDir;
+    }
+
+    private void throwIfInvalidFile(Path fileName) {
+        // Some security and validation:
+        // (1) Keep requests in the DM dir, no looking outside the dir.
+        // (2) We only want files, not directories.
+        if (fileName.isAbsolute()) {
+            throw new IllegalArgumentException(String.format("File name must be relative to chatdmdir", easyChatDir, fileName));
+        } else if (containsUpwardTraversal(fileName)) {
             throw new IllegalArgumentException("File name cannot contain upward traversal: " + fileName);
         }
 
-        Files.writeString(fullPath, content);
     }
-
-//    void appendFile(String fileName, String content) throws IOException {
-//
-//    }
 
     /**
      * Checks if a path contains any directory traversal elements.
