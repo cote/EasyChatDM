@@ -28,12 +28,12 @@
 	</scm>
 	<properties>
 		<java.version>24</java.version>
-		<spring-ai.version>1.0.0-M6</spring-ai.version>
+		<spring-ai.version>1.0.0-M7</spring-ai.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.ai</groupId>
-			<artifactId>spring-ai-mcp-server-spring-boot-starter</artifactId>
+			<artifactId>spring-ai-starter-mcp-server</artifactId>
 		</dependency>
 
 		<dependency>

@@ -27,7 +27,7 @@ as they come out.
 
 - [Enabling developer mode in Claude desktop](https://modelcontextprotocol.io/quickstart/user)
 - [The ChatDM project](https://github.com/cote/chatdm/tree/main) - more sophisticated ChatDM tool that's better designed, has more tools, etc.
-- [Dan Vega's MCP examples](https://github.com/danvega/dv-courses-mcp)
+- [Dan Vega's MCP examples](https://github.com/danvega/dv-courses-mcp).
 - [Plot Unfolding Machine](https://jeansenvaars.itch.io/plot-unfolding-machine) - some prompts are based on 
   JeansenVaar's PUM system, which is CC BY-NC-SA 4.0.
 - [My experience playing D&amp;D with ChatGPT and generative AI](https://www.youtube.com/playlist?list=PLk_5VqpWEtiWbS-AHbk6WxgMfnpYaIx3g) - video notebook of how I play D&amp;D with the AIs.
