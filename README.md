@@ -14,7 +14,7 @@ complex, feature-ful somewhat better designed version of this EasyChatDM.
 
 Here are [some videos](https://www.youtube.com/playlist?list=PLk_5VqpWEtiWA4NtTC_QwTofEpd34fRFx) going over the project:
 
-1.[Part one of a video series](https://www.youtube.com/watch?v=iROihhd_OiI) where I build a very simple MCP 
+1. [Part one of a video series](https://www.youtube.com/watch?v=iROihhd_OiI) where I build a very simple MCP 
 too-land.
 2. In [part two of the video series](https://www.youtube.com/watch?v=VD1GFZgtzuI) where I build a file-based oracle 
 and go over how to use the logs Claude makes and start doing your own logging.
