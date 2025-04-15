@@ -7,7 +7,7 @@ import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Random;
+
 
 @Service
 public class JournalTool {

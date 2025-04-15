@@ -26,9 +26,8 @@ public class DMJournalRepository {
     // TK also, can make a version that stores the DM Journal in a database instead.
     // TK also, a version that uses RAG to just retrieve relevant stuff.
 
-    Logger logger = LoggerFactory.getLogger(DMJournalRepository.class);
-
     private final ChatDMDir chatDMDir;
+    Logger logger = LoggerFactory.getLogger(DMJournalRepository.class);
 
     public DMJournalRepository(ChatDMDir chatDMDir) {
         this.chatDMDir = chatDMDir;

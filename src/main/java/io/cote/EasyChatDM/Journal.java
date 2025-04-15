@@ -26,6 +26,21 @@ public class Journal {
         this.title = title;
     }
 
+    // For JSON serialization - Jackson will use this
+    // No args constructor may be needed by some frameworks
+    Journal() {
+        this.title = "";
+    }
+
+    @JsonCreator
+    public Journal(@JsonProperty("title") String title,
+                   @JsonProperty("entries") List<Entry> entries) {
+        this.title = title;
+        if (entries != null) {
+            this.entries.addAll(entries);
+        }
+    }
+
     public String getTitle() {
         return title;
     }
@@ -52,21 +67,6 @@ public class Journal {
         addEntry(new Entry(new Date(), Entry.AUTHOR_DM, "", content));
     }
 
-    // For JSON serialization - Jackson will use this
-    // No args constructor may be needed by some frameworks
-    Journal() {
-        this.title = "";
-    }
-
-    @JsonCreator
-    public Journal(@JsonProperty("title") String title,
-                   @JsonProperty("entries") List<Entry> entries) {
-        this.title = title;
-        if (entries != null) {
-            this.entries.addAll(entries);
-        }
-    }
-
     /**
      * @param date    the real-world date of the journal entry. If null, {@link LocalDate#now()} will be used.
      * @param author  the author. If null or empty, will use {@link Journal.Entry#AUTHOR_DM}, the default author.
@@ -79,6 +79,11 @@ public class Journal {
                         String author,
                         String summary,
                         String content) {
+
+        /**
+         * For use when the author is the DM.
+         */
+        public static final String AUTHOR_DM = "DM";
 
         public Entry {
             if (date == null) {
@@ -95,11 +100,6 @@ public class Journal {
             }
 
         }
-
-        /**
-         * For use when the author is the DM.
-         */
-        public static final String AUTHOR_DM = "DM";
     }
 
 

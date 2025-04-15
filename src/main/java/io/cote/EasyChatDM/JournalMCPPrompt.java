@@ -5,12 +5,12 @@ import io.modelcontextprotocol.spec.McpSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
-import static io.modelcontextprotocol.spec.McpSchema.Role.ASSISTANT;
 
-import org.springframework.stereotype.Component;
+import static io.modelcontextprotocol.spec.McpSchema.Role.ASSISTANT;
 
 @Component
 public class JournalMCPPrompt {
@@ -47,7 +47,7 @@ public class JournalMCPPrompt {
 
                                 journalJSON = dmRepository.readJournalAsJSON();
 
-                            } catch(IOException e) {
+                            } catch (IOException e) {
                                 // It'd be fun to return a log error through exchange.log...?
                                 logger.error("Error reading DM Journal file. Returning empty journal.", e);
                             }
