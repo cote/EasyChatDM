@@ -29,7 +29,31 @@ public class JournalMCPResource {
         // Here's the resource that is going to be returned.
         McpSchema.Resource resource = new McpSchema.Resource("file:///easychatdm/journal/dm-journal.json",
                 "DM Journal",
-                "The DM Journal is a place to keep notes for the DM to use when writing adventures.",
+                """
+                          This is a DM Journal Resource. You can use it to read and interpret the state of the game, events, etc.  
+                          You have a separate tool used to add to the journal entry, probably called something like 
+                          EasyChatDM_addDMJournalEntry
+                          
+                          ### What each entry contains
+                          
+                          - **Scene & Date**: anchors the moment in the narrative.
+                          - **Summary**: the key events that occurred.
+                          - **NPC Highlights**: updates to relationships, new allies or enemies.
+                          - **Key Decisions & Threads**: promises, bargains, unresolved plot lines.
+                          - **Loot & Resources**: items, clues, and funds acquired.
+                          - **PC Status**: health, spells, conditions, exhaustion.
+                          - **Plans & Branching Paths**: upcoming options and forks.
+                          
+                          ### How to use this journal
+                          
+                          - **Before starting a scene**, review the most recent entries to set context.
+                          - **When players ask** "What happened last time?" quote the Summary of the last entry.
+                          - **When an NPC reappears**, consult NPC Highlights to keep their attitude consistent.
+                          - **If a plot thread is pursued**, refer to Key Decisions & Threads for background.
+                          - **When inventory or clues are needed**, draw from Loot & Resources.
+                          - **During combat or healing**, honor the PC Status details.
+                          - **When offering choices**, present the Plans & Branching Paths forks or create new branches.
+                    """,
                 "application/json",
                 new McpSchema.Annotations(List.of(ASSISTANT), 1.0));
 
@@ -40,6 +64,8 @@ public class JournalMCPResource {
 
                             logger.debug("JournalMCPResource called with request {}", request);
 
+                            // TK can thus just return the Journal object and
+                            // have the framework marshal it to JSON?
                             String journalJSON = "";
                             try {
                                 journalJSON = dmRepository.readJournalAsJSON();

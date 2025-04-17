@@ -24,16 +24,17 @@ public class JournalTool {
                           This is the DM Journal tool: the Dungeon Master uses it to record and consult private notes about the adventure.
                           Most of these entries are not for player's eyes but for the DM to remember.
                           Use to maintain, remember, and continue game state.
-                          Read each section to maintain game state and append new entries after each scene.
-                          You only need to record the sections relevant to the update; omit any fields that have no changes. For example, if the only new information is meeting a new NPC, an entry with just Scene & Date and NPC Highlights is sufficient.
+                          You only need to record the sections relevant to the update; omit any fields that have no changes. 
+                          For example, if the only new information is meeting a new NPC, an entry with just Scene & Date and NPC Highlights 
+                          is sufficient.
                           
                           ## 1. Scene & Date
                           
                           _Tag each entry with where and when._
                           
-                          - Scene 8 (Eighth night, Moor of Thar) \s
-                          - Scene 2 (Arrival at Melvaunt, afternoon) \s
-                          - Scene 5 (Gatehouse breach, early dawn) \s
+                          - Scene 8 (Eighth night, Moor of Thar)
+                          - Scene 2 (Arrival at Melvaunt, afternoon)
+                          - Scene 5 (Gatehouse breach, early dawn)
                           
                           ## 2. Two-Sentence Summary
                           
@@ -100,7 +101,9 @@ public class JournalTool {
                           
                           **Scene 2 (Arrival in Melvaunt, late afternoon)**
                           Two-Sentence Summary
-                          Lord Nanther pressed the PCs for Oreal's safe return and dropped a gold-tipped ivory cane as proof of his seriousness; he sketched his son's features in charcoal before collapsing in frustration. The seal of House Nanther opened every gate, but tensions simmer beneath the city's grime.
+                          Lord Nanther pressed the PCs for Oreal's safe return and dropped a gold-tipped ivory cane as proof of his seriousness; 
+                          he sketched his son's features in charcoal before collapsing in frustration. The seal of House Nanther opened every gate, 
+                          but tensions simmer beneath the city's grime.
                           
                           NPC Highlights
                           - Woarsten Nanther (quest-giver): courteous but desperate, will underwrite river guides if needed.
@@ -130,7 +133,8 @@ public class JournalTool {
                           
                           **Scene 6 (Bleak Road, mid-morning of Day 3)**
                           Two-Sentence Summary
-                          A hungry dire wolf burst from the fog and charged the campfire; the PCs drove it off with crossbow bolts and hand axes, leaving it limping into the brush. A torn piece of a scion's cloak snagged on its collar hinted at a close call.
+                          A hungry dire wolf burst from the fog and charged the campfire; the PCs drove it off with crossbow bolts and hand axes, 
+                          leaving it limping into the brush. A torn piece of a scion's cloak snagged on its collar hinted at a close call.
                           
                           NPC Highlights
                           - Grûnhawr's distant howl suggested Haravak was watching.
@@ -158,7 +162,8 @@ public class JournalTool {
                           
                           **Scene 11 (Xul-Jarak Cell Block, early evening)**
                           Two-Sentence Summary
-                          Using the shrine key, the PCs slipped open the bars and freed Oreal and Kalman, both dazed but alive; Kara Calaudra's raven guided them toward the forge exit. Chains and blood-stained straw marked where the last scion fell.
+                          Using the shrine key, the PCs slipped open the bars and freed Oreal and Kalman, both dazed but alive; 
+                          Kara Calaudra's raven guided them toward the forge exit. Chains and blood-stained straw marked where the last scion fell.
                           
                           NPC Highlights
                           - Oreal Nanther: shaken, swore off peace talks until his people are safe.
@@ -201,12 +206,24 @@ public class JournalTool {
         logger.debug("addDMJournalEntry called with context {}", context);
     }
 
+    /**
+     * Read the entire DM Journal.
+     *
+     * This should really only be an MCP Resource, but Claude desktop does not
+     * look up resources on its own (even after you authorize and hook it up), so
+     * having this as a tool allows Claude desktop to load this on its own.
+     *
+     * @param context
+     * @return
+     */
     @Tool(name = "EasyChatDM_readDMJournal",
             description = """
-                          This is a DM Journal Resource. You can use it to read and interpret the state of the game, events, etc.  You have a separate tool used to add to the journal entry, probably called something like EasyChatDM_addDMJournalEntry
-                          
+                          This is a DM Journal Resource. You can use it to read and interpret the state of the game, events, etc.
+                          You have a separate tool used to add to the journal entry, probably called something like
+                          EasyChatDM_addDMJournalEntry
+
                           ### What each entry contains
-                          
+
                           - **Scene & Date**: anchors the moment in the narrative.
                           - **Summary**: the key events that occurred.
                           - **NPC Highlights**: updates to relationships, new allies or enemies.
@@ -214,9 +231,9 @@ public class JournalTool {
                           - **Loot & Resources**: items, clues, and funds acquired.
                           - **PC Status**: health, spells, conditions, exhaustion.
                           - **Plans & Branching Paths**: upcoming options and forks.
-                          
+
                           ### How to use this journal
-                          
+
                           - **Before starting a scene**, review the most recent entries to set context.
                           - **When players ask** "What happened last time?" quote the Summary of the last entry.
                           - **When an NPC reappears**, consult NPC Highlights to keep their attitude consistent.
@@ -226,7 +243,7 @@ public class JournalTool {
                           - **When offering choices**, present the Plans & Branching Paths forks or create new branches.
                     """)
     public Journal readDMJournal(@ToolParam(description = """
-            Any relevant context for why you're asking for the DM journal right now, 
+            Any relevant context for why you're asking for the DM journal right now,
             what you're looking for and what you might do with it, etc.
             """) String context) {
         logger.info("readDMJournal called with context {}", context);
