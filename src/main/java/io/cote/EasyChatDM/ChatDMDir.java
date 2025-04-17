@@ -3,9 +3,9 @@ package io.cote.EasyChatDM;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.stringtemplate.v4.ST;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -80,20 +80,15 @@ public class ChatDMDir {
 
         // All good!
         try (Stream<Path> paths = Files.walk(bundleDir)) {
-            return paths
-                    .filter(Files::isRegularFile)
-                    .filter(p -> p.getFileName().toString().endsWith(".txt"))
-                    .collect(Collectors.toMap(
-                            p -> p.getFileName().toString(),
-                            p -> {
-                                try {
-                                    return getAllLines(bundleDir.relativize(p));
-                                } catch (IOException e) {
-                                    logger.warn("Failed to read file {}", p, e);
-                                    return Collections.emptyList();
-                                }
-                            }
-                    ));
+            return paths.filter(Files::isRegularFile).filter(p -> p.getFileName().toString().endsWith(".txt")).collect(
+                    Collectors.toMap(p -> p.getFileName().toString(), p -> {
+                        try {
+                            return getAllLines(bundleDir.relativize(p));
+                        } catch (IOException e) {
+                            logger.warn("Failed to read file {}", p, e);
+                            return Collections.emptyList();
+                        }
+                    }));
         } catch (IOException e) {
             logger.error("Failed to read from bundle directory {}", bundleDir, e);
             return Collections.emptyMap();
@@ -141,9 +136,7 @@ public class ChatDMDir {
         List<String> cleanedLines = Collections.emptyList();
         // Now we have a file, and one that exists
         try (Stream<String> s = Files.lines(fullPath)) {
-            cleanedLines = s.map(String::trim).
-                    filter(line -> !line.startsWith("#")).
-                    toList();
+            cleanedLines = s.map(String::trim).filter(line -> !line.startsWith("#")).toList();
         }
 
         return Collections.unmodifiableList(cleanedLines);
@@ -157,8 +150,10 @@ public class ChatDMDir {
     }
 
     /**
-     * Reads the file from the dmDir. Will throw {@linke IllegalArgumentException} if the file is outside of the DM
-     * Dir.
+     * Reads the file from the dmDir. Will throw {@linke IllegalArgumentException} if the file is outside of the DM Dir.
+     * If the filename ends in <code>.st</code>, the file is assumed to be <a
+     * href="https://github.com/antlr/stringtemplate4/blob/master/doc/introduction.md">a stringtemplate4 file</a> and
+     * processed as such.
      *
      * @param fileName the file to read
      * @return the contents of the file as a {@link String}.
@@ -169,15 +164,21 @@ public class ChatDMDir {
         // all good
         Path fullPath = easyChatDir.resolve(fileName);
         logger.debug("Reading file {}", fullPath);
-        return Files.readString(fullPath);
 
+        // check if String Template.
+        if (fullPath.endsWith(".st")) {
+            ST st = new ST(readFile(fullPath));
+            return st.render();
+        } else {
+            return Files.readString(fullPath);
+        }
     }
 
     /**
      * Convenience method for {@link #writeFile(Path, String)}}.
      *
      * @param fileName the file to write the contents to
-     * @param content the contents to write.
+     * @param content  the contents to write.
      * @throws IOException
      */
     void writeFile(String fileName, String content) throws IOException {
@@ -221,7 +222,8 @@ public class ChatDMDir {
         // (1) Keep requests in the DM dir, no looking outside the dir.
         // (2) We only want files, not directories.
         if (fileName.isAbsolute()) {
-            throw new IllegalArgumentException(String.format("File name must be relative to chatdmdir", easyChatDir, fileName));
+            throw new IllegalArgumentException(
+                    String.format("File name must be relative to chatdmdir", easyChatDir, fileName));
         } else if (containsUpwardTraversal(fileName)) {
             throw new IllegalArgumentException("File name cannot contain upward traversal: " + fileName);
         }
