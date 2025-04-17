@@ -1,6 +1,12 @@
 package io.cote.EasyChatDM;
 
 
+import io.modelcontextprotocol.server.McpServer;
+import io.modelcontextprotocol.server.McpSyncServer;
+import io.modelcontextprotocol.server.transport.StdioServerTransportProvider;
+import io.modelcontextprotocol.spec.McpSchema;
+import jakarta.annotation.PostConstruct;
+import org.springframework.ai.mcp.McpToolUtils;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;

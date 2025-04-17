@@ -3,6 +3,7 @@ package io.cote.EasyChatDM;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ import java.util.stream.Stream;
  */
 @Service
 public class ChatDMDir {
+
+    // TK make Resource Template out of this?
 
     private static final Logger logger = LoggerFactory.getLogger(ChatDMDir.class);
 
@@ -157,7 +160,7 @@ public class ChatDMDir {
      * Reads the file from the dmDir. Will throw {@linke IllegalArgumentException} if the file is outside of the DM
      * Dir.
      *
-     * @param fileName
+     * @param fileName the file to read
      * @return the contents of the file as a {@link String}.
      */
     String readFile(Path fileName) throws IOException {
@@ -173,8 +176,8 @@ public class ChatDMDir {
     /**
      * Convenience method for {@link #writeFile(Path, String)}}.
      *
-     * @param fileName
-     * @param content
+     * @param fileName the file to write the contents to
+     * @param content the contents to write.
      * @throws IOException
      */
     void writeFile(String fileName, String content) throws IOException {

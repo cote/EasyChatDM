@@ -13,12 +13,12 @@ import java.util.List;
 import static io.modelcontextprotocol.spec.McpSchema.Role.ASSISTANT;
 
 @Component
-public class JournalMCPPrompt {
+public class JournalMCPResource {
 
-    private final Logger logger = LoggerFactory.getLogger(JournalTool.class);
+    private final Logger logger = LoggerFactory.getLogger(JournalMCPResource.class);
     private final DMJournalRepository dmRepository;
 
-    public JournalMCPPrompt(DMJournalRepository dmRepository) {
+    public JournalMCPResource(DMJournalRepository dmRepository) {
         this.dmRepository = dmRepository;
     }
 
@@ -26,29 +26,26 @@ public class JournalMCPPrompt {
     @Bean
     List<McpServerFeatures.SyncResourceSpecification> loadDMJournalResource() {
 
-        // This is some gnarly code. What am I doing wrong?
-
         // Here's the resource that is going to be returned.
-        McpSchema.Resource resource = new McpSchema.Resource("file:///chatdm/journal/dm-journal.json",
+        McpSchema.Resource resource = new McpSchema.Resource("file:///easychatdm/journal/dm-journal.json",
                 "DM Journal",
                 "The DM Journal is a place to keep notes for the DM to use when writing adventures.",
                 "application/json",
-                new McpSchema.Annotations(List.of(ASSISTANT), Double.valueOf(1.0)));
+                new McpSchema.Annotations(List.of(ASSISTANT), 1.0));
 
         McpServerFeatures.SyncResourceSpecification reg =
                 new McpServerFeatures.SyncResourceSpecification(
                         resource,
                         (exchange, request) -> {
 
-                            logger.debug("JournalMCPPrompt called with request {}", request);
+                            logger.debug("JournalMCPResource called with request {}", request);
 
                             String journalJSON = "";
                             try {
-
                                 journalJSON = dmRepository.readJournalAsJSON();
-
                             } catch (IOException e) {
                                 // It'd be fun to return a log error through exchange.log...?
+                                exchange.loggingNotification(new McpSchema.LoggingMessageNotification(McpSchema.LoggingLevel.ERROR, "easychatdm", e.getMessage()));
                                 logger.error("Error reading DM Journal file. Returning empty journal.", e);
                             }
 
@@ -57,7 +54,6 @@ public class JournalMCPPrompt {
                                     resource.mimeType(),
                                     journalJSON
                             );
-
 
                             return new McpSchema.ReadResourceResult(
                                     List.of(contents));
