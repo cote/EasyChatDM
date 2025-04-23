@@ -10,7 +10,7 @@ _Some helpful things to remember and cut and paste._
   docs](https://modelcontextprotocol.io/sdk/java/mcp-server), [client docs]
   (https://modelcontextprotocol.io/sdk/java/mcp-client).
 - [Very simple MCP Server coding](https://glaforge.
-  dev/posts/2025/04/04/mcp-client-and-server-with-java-mcp-sdk-and-langchain4j/.
+  dev/posts/2025/04/04/mcp-client-and-server-with-java-mcp-sdk-and-langchain4j/).
 
 Claude's directory is: 
 

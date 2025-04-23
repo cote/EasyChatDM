@@ -200,7 +200,7 @@ public class JournalTool {
                           """
                           )
     public void addDMJournalEntry(@ToolParam(description = "The DM journal entry.") String entry,
-                                  @ToolParam(description = "Any interesting context for why you are writing this entry right now") String context)
+                                  @ToolParam(description = MCPUtils.CONTEXT_DESCRIPTION) String context)
             throws IOException {
         dmRepository.addEntry(entry);
         logger.debug("addDMJournalEntry called with context {}", context);
