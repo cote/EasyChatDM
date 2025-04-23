@@ -14,6 +14,20 @@ Spring AI MCP. This project is for education, so no consideration is given to
 good design. Instesd, the code is
 written to make it easy to follow step-by-step how to create tools.
 
+# Running it
+
+You shouldf copy over the contents of contents of 
+<code>src/main/easychatdmdir/prompts/</code> to <code>~/.easychatdm</code>. 
+These are files for prompts, oracles, etc. uses.
+
+# Acknowledgements
+
+- Some oracle values and schemes used from [JeansenVaars's Play By Writing]
+  (https://github.com/saif-ellafi/play-by-the-writing), 
+  and PUM, GUM, etc. systems.
+
+# More 
+
 See [the ChatDM project](https://github.com/cote/chatdm/tree/main) for a more
 complex, feature-ful somewhat better designed version of this EasyChatDM.
 

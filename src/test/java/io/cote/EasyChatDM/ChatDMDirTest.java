@@ -4,20 +4,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-//@TestPropertySource(properties = {"easychatdm.dir=${java.io.tmpdir}"})
+  //@TestPropertySource(properties = {"easychatdm.dir=${java.io.tmpdir}"})
 class ChatDMDirTest {
 
     @TempDir
@@ -36,13 +36,13 @@ class ChatDMDirTest {
     void testReadFile() throws IOException {
         Path file = tempDir.resolve("testReadFile.txt");
         String fileContents = """
-                # for ChatDMDirTest#testReadFile()
-                # This is a comment
-                line1
-                line2
-                # another comment
-                line3
-                """;
+                              # for ChatDMDirTest#testReadFile()
+                              # This is a comment
+                              line1
+                              line2
+                              # another comment
+                              line3
+                              """;
         Files.writeString(file, fileContents);
 
         String content = chatDMDir.readFile("testReadFile.txt");
@@ -67,12 +67,12 @@ class ChatDMDirTest {
         // Arrange
         Path file = tempDir.resolve("testfile.txt");
         Files.writeString(file, """
-                # This is a comment
-                line1
-                line2
-                # another comment
-                line3
-                """);
+                                # This is a comment
+                                line1
+                                line2
+                                # another comment
+                                line3
+                                """);
 
         // Act
         List<String> lines = chatDMDir.getAllLines(file.getFileName());
@@ -93,9 +93,8 @@ class ChatDMDirTest {
     @Test
     void testGetAllLines_UpwardTraversal() {
         // Act & Assert
-        assertThatThrownBy(() -> chatDMDir.getAllLines(Path.of("../evil.txt")))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("upward traversal");
+        assertThatThrownBy(() -> chatDMDir.getAllLines(Path.of("../evil.txt"))).isInstanceOf(
+          IllegalArgumentException.class).hasMessageContaining("upward traversal");
     }
 
     @Test
@@ -108,5 +107,31 @@ class ChatDMDirTest {
 
         // Assert
         assertThat(lines).isEmpty();
+    }
+
+    @Test
+    void testLoadBundleDir() throws IOException
+    {
+        // This gets a little confusing if you trace/dig into the code because of the handling
+        // I put into the ChatDMDir to keep people from passing in absolute file paths.
+
+        // create some dummy files
+        String oracleOne = "Sad\nHappy\nMad\nBored";
+        String oracleTwo = "Tea\nAle\nCoffee\nWater\nWine";
+        String oracleThree = "Troll\nOgre\nHill Giant\nBronze Dragon";
+
+        Path bundleDir = tempDir.resolve("oracles/named");
+
+        chatDMDir.writeFile(Path.of("oracles/named/", "npc_emotions.test.last.dot.removed.only.txt"), oracleOne);
+        chatDMDir.writeFile(Path.of("oracles/named/", "drinks.txt"), oracleTwo);
+        chatDMDir.writeFile(Path.of("oracles/named/", "monsters.txt"), oracleThree);
+
+        Map<String, List<String>> files = chatDMDir.loadBundleDir("oracles/named/");
+
+        assertThat(files).withFailMessage("Failed to create or read three files.").hasSize(3);
+
+        List<String> emotions = files.get("npc_emotions.test.last.dot.removed.only");
+        assertThat(emotions).containsExactly(oracleOne.split("\n"));
+
     }
 }

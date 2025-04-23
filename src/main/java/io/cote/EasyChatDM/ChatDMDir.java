@@ -58,7 +58,7 @@ public class ChatDMDir {
         logger.debug("EasyChatDM dir is {}", easyChatDir);
     }
 
-    private Map<String, List<String>> loadBundleDir(String bundleName) {
+    Map<String, List<String>> loadBundleDir(String bundleName) {
         /*
         Working on this.
         It will load all the bundles in a directory (like oracles) so that you don't
@@ -85,21 +85,36 @@ public class ChatDMDir {
         try (Stream<Path> paths = Files.walk(bundleDir)) {
             return paths.filter(Files::isRegularFile).filter(
                     p -> p.getFileName().toString().endsWith(".txt")).collect(
-                    Collectors.toMap(p -> p.getFileName().toString(), p -> {
+                    Collectors.toMap(p -> stripExtension(p.getFileName().toString()), p -> {
                         try {
-                            return getAllLines(bundleDir.relativize(p));
+                            // Now we need to relative paths again for the validation
+                            // check to avoid passing in a absolute path.
+                            String relativePath = p.getFileName().toString();
+                            return getAllLines(Path.of( bundleName, relativePath));
                         } catch (IOException e) {
                             logger.warn("Failed to read file {}", p, e);
                             return Collections.emptyList();
                         }
                     }));
         } catch (IOException e) {
-            logger.error("Failed to read from bundle directory {}", bundleDir,
+            logger.error("Returning empty listing. Failed to read from bundle directory {}", bundleDir,
                          e);
             return Collections.emptyMap();
         }
 
     }
+
+    /**
+     * Returns the filename without its extension. It will only
+     * remove the <i>last</i> part of the string that starts with a period.
+     * @param filename the full filename (e.g. "foo.txt" or "club.salad.txt)
+     * @return the base name without extension (e.g. "foo" or "club.salad" )
+     */
+    private static String stripExtension(String filename) {
+        int dot = filename.lastIndexOf('.');
+        return (dot > 0) ? filename.substring(0, dot) : filename;
+    }
+
 
     /**
      * Wrapper for {@link #getAllLines(Path)} that creates a path out of
