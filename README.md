@@ -16,7 +16,7 @@ written to make it easy to follow step-by-step how to create tools.
 
 # Running it
 
-You shouldf copy over the contents of contents of 
+You should copy over the contents of contents of 
 <code>src/main/easychatdmdir/prompts/</code> to <code>~/.easychatdm</code>. 
 These are files for prompts, oracles, etc. uses.
 
@@ -35,12 +35,10 @@ Here
 are [some videos](https://www.youtube.com/playlist?list=PLk_5VqpWEtiWA4NtTC_QwTofEpd34fRFx)
 going over the project:
 
-1. [Part one of a video series](https://www.youtube.com/watch?v=iROihhd_OiI)
-   where I build a very simple MCP
-   too-land.
-2.
-In [part two of the video series](https://www.youtube.com/watch?v=VD1GFZgtzuI)
-where I build a file-based oracle
+1. [Part one of a video series](https://www.youtube.com/watch?v=iROihhd_OiI) 
+   where I build a very simple MCP too-land.
+2. In [part two of the video series](https://www.youtube.com/watch?
+   v=VD1GFZgtzuI) where I build a file-based oracle
 and go over how to use the logs Claude makes and start doing your own logging.
 3. In [part three, I build an MCP Resource](https://www.youtube.com/watch?v=b_vKjph8W2o) to serve as a DM Journal to
    persist game information between play sessions.
