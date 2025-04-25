@@ -41,6 +41,8 @@ going over the project:
 and go over how to use the logs Claude makes and start doing your own logging.
 3. In [part three, I build an MCP Resource](https://www.youtube.com/watch?v=b_vKjph8W2o) to serve as a DM Journal to
    persist game information between play sessions.
+4. Finally, [I get around to making an MCP Promopt](https://www.youtube.com/watch?v=xEtYBznneFg), which is really exciting. 
+   This is the first glimpse at something that feels "agentic."
 
 Keep an eye on
 [the playlist](https://www.youtube.com/playlist?list=PLk_5VqpWEtiWA4NtTC_QwTofEpd34fRFx)
