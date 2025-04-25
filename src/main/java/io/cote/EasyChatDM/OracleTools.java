@@ -51,22 +51,26 @@ public class OracleTools {
         return Map.of("deterministic oracle answer", answer);
     }
 
-    @Tool(name = "EasyChatDM_Subjective_Oracle", description = """
-                                                               When playing Dungeons and Dragons (DnD), use this oracle tool to determine open ended questions
-                                                               that can lead to unexpected plot points. You should determine an interpretation of the answer
-                                                               rather than having it be a clear, binary yes or no.
-                                                               For example, your PCs may not yet be ready to know the answer at all, 
-                                                               and need to figure out another way to find an answer, 
-                                                               or it might require a skill test to figure it out before they can, 
-                                                               or perhaps they have to hurry up a to find out. 
-                                                               Play with the answers in a fun way.
-                                                               """)
-    public Map subjectiveOracle(@ToolParam(description = "The context of this question: why are you doing this check and what might you do with the result.", required = true) String questionContext) {
+    @Tool(name = "EasyChatDM_Subjective_Oracle",
+          description = """
+                        When playing Dungeons and Dragons (DnD), use this oracle tool to determine 
+                        open ended questions that can lead to unexpected plot points. You should 
+                        determine an interpretation of the answer
+                        rather than having it be a clear, binary yes or no.
+                        For example, your PCs may not yet be ready to know the answer at all, 
+                        and need to figure out another way to find an answer, 
+                        or it might require a skill test to figure it out before they can, 
+                        or perhaps they have to hurry up a to find out. 
+                        Play with the answers in a fun way.
+                        """
+    )
+    public String subjectiveOracle(@ToolParam(description = MCPUtils.CONTEXT_DESCRIPTION, required = true)
+                                    String questionContext) {
         String[] answers = {"No, definitely not", "Apparently not", "No, not yet...", "No, but...", "Don't know, can't tell", "It depends (on skills check)", "Yes, but...", "Yes, for now", "Yes, apparently", "Yes, absolutely"};
 
         String answer = pickRandom(answers);
         logger.info("Deterministic OracleTools called: {} -> {}", questionContext, answer);
-        return Map.of("subjective oracle answer", answer);
+        return answer;
     }
 
     @Tool(name = "EasyChatDM_NPC_Conversations", description = """
