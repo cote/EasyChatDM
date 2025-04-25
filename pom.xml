@@ -41,6 +41,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- for dice rolling https://github.com/bernardo-mg/dice-notation-java -->
+		<dependency>
+			<groupId>com.bernardomg.tabletop</groupId>
+			<artifactId>dice</artifactId>
+			<version>2.2.5</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
