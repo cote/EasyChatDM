@@ -47,9 +47,9 @@ public class DMMCPPrompt {
         var prompt = new Prompt(
                 "DM_Startup_Prompt",
            """
-                     This prompt gives instructions to the Chat DM AI for how to 
-                     become, behave, and play as a Dungeons and Dragons DM. These instructions
-                     should be followed carefully and followed. 
+                     This prompt gives instructions to the Chat DM AI for how to  
+                     become, behave, and play as a Dungeons and Dragons DM. These instructions 
+                     should be followed carefully and followed.
                      """,
            List.of(
                    new PromptArgument("context",
@@ -58,9 +58,9 @@ public class DMMCPPrompt {
                    new PromptArgument(
                            "ExtraInfo",
                            """
-                                     Extra instructions given by the player about 
-                                     how they'd like to play, ongoing information,
-                                     or anything they'd like the ChatDM to know.
+                                     Extra instructions given by the player about  
+                                     how they'd like to play, ongoing information, 
+                                     or anything they'd like the ChatDM to know. 
                                      """, true)
                    ));
 
@@ -72,7 +72,7 @@ public class DMMCPPrompt {
                     String promptText =
                             """
                             No instructions given. Be an awesome D&D 5e Dungeon Master. 
-                            Ask the player for more guidence.
+                            Ask the player for more guidance.
                             """;
 
                     // Make sure we have ExtraInfo args

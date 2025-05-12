@@ -25,8 +25,7 @@ public class ChatDMDir {
 
     // TK make Resource Template out of this?
 
-    private static final Logger logger = LoggerFactory.getLogger(
-            ChatDMDir.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChatDMDir.class);
 
     @Value("${easychatdm.dir:${user.dir}/.easychatdm}")
     private String dirProperty;
@@ -59,13 +58,6 @@ public class ChatDMDir {
     }
 
     Map<String, List<String>> loadBundleDir(String bundleName) {
-        /*
-        Working on this.
-        It will load all the bundles in a directory (like oracles) so that you don't
-        need to load them each time.
-        Also, it will allow us to make a dynamic oracle based on which files are there,
-        which will make us need to create the listOracles() tool
-        */
 
         Path bundleDirFragment = Path.of(bundleName);
         throwIfInvalidFile(bundleDirFragment);
@@ -73,67 +65,65 @@ public class ChatDMDir {
         Path bundleDir = easyChatDir.resolve(bundleDirFragment);
         logger.debug("bundle dir is now {}", bundleDir);
         if (containsUpwardTraversal(bundleDir)) {
-            throw new IllegalArgumentException(
-                    "Bundle name cannot contain upward traversal: " + bundleName);
+            throw new IllegalArgumentException("Bundle name cannot contain upward traversal: " + bundleName);
         } else if (!Files.isDirectory(bundleDir)) {
-            logger.debug("bundle dir {} does not exist or is not a directory",
-                         bundleDir);
+            logger.debug("bundle dir {} does not exist or is not a directory", bundleDir);
             return Collections.emptyMap();
         }
 
         // All good!
         try (Stream<Path> paths = Files.walk(bundleDir)) {
             return paths.filter(Files::isRegularFile).filter(
-                    p -> p.getFileName().toString().endsWith(".txt")).collect(
-                    Collectors.toMap(p -> stripExtension(p.getFileName().toString()), p -> {
-                        try {
-                            // Now we need to relative paths again for the validation
-                            // check to avoid passing in a absolute path.
-                            String relativePath = p.getFileName().toString();
-                            return getAllLines(Path.of( bundleName, relativePath));
-                        } catch (IOException e) {
-                            logger.warn("Failed to read file {}", p, e);
-                            return Collections.emptyList();
-                        }
-                    }));
+              p -> acceptedFileFormat(p.getFileName().toString())).collect(
+              Collectors.toMap(p -> p.getFileName().toString(), p -> {
+                  try {
+                      // Now we need to relative paths again for the validation
+                      // check to avoid passing in a absolute path.
+                      String relativePath = p.getFileName().toString();
+                      return getAllLines(Path.of(bundleName, relativePath));
+                  } catch (IOException e) {
+                      logger.warn("Failed to read file {}", p, e);
+                      return Collections.emptyList();
+                  }
+              }));
         } catch (IOException e) {
-            logger.error("Returning empty listing. Failed to read from bundle directory {}", bundleDir,
-                         e);
+            logger.error("Returning empty listing. Failed to read from bundle directory {}", bundleDir, e);
             return Collections.emptyMap();
         }
 
     }
 
     /**
-     * Returns the filename without its extension. It will only
-     * remove the <i>last</i> part of the string that starts with a period.
+     * Returns the filename without its extension. It will only remove the <i>last</i> part of the string that starts
+     * with a period.
+     *
      * @param filename the full filename (e.g. "foo.txt" or "club.salad.txt)
      * @return the base name without extension (e.g. "foo" or "club.salad" )
      */
-    private static String stripExtension(String filename) {
+    private String stripExtension(String filename) {
         int dot = filename.lastIndexOf('.');
         return (dot > 0) ? filename.substring(0, dot) : filename;
     }
 
+    private boolean acceptedFileFormat(String filename) {
+        return (filename.endsWith(".txt") || filename.endsWith(".yaml") || filename.endsWith(
+          ".yml") || filename.endsWith(".st"));
+    }
 
     /**
-     * Wrapper for {@link #getAllLines(Path)} that creates a path out of
-     * fileName.
+     * Wrapper for {@link #getAllLines(Path)} that creates a path out of fileName.
      */
     List<String> getAllLines(String fileName) throws IOException {
         return getAllLines(Path.of(fileName));
     }
 
     /**
-     * If the passed in file is actually a file, reads each line into a List.
-     * Each line is trimmed and if a line starts with a # that line is treated
-     * as a comment and excluded from the list. If the file is a directory or
-     * does not exist, an empty list will be returned.
+     * If the passed in file is actually a file, reads each line into a List. Each line is trimmed and if a line starts
+     * with a # that line is treated as a comment and excluded from the list. If the file is a directory or does not
+     * exist, an empty list will be returned.
      *
-     * @param fileName the relative path to the file to load. The file must be
-     *                 in the chatdmdir.
-     * @return an unmodifiable List<String> of the lines in the file, in order
-     * per the above.
+     * @param fileName the relative path to the file to load. The file must be in the chatdmdir.
+     * @return an unmodifiable List<String> of the lines in the file, in order per the above.
      * @throws IOException if an error occurs.
      */
     List<String> getAllLines(Path fileName) throws IOException {
@@ -160,8 +150,7 @@ public class ChatDMDir {
         List<String> cleanedLines = Collections.emptyList();
         // Now we have a file, and one that exists
         try (Stream<String> s = Files.lines(fullPath)) {
-            cleanedLines = s.map(String::trim).filter(
-                    line -> !line.startsWith("#")).toList();
+            cleanedLines = s.map(String::trim).filter(line -> !line.startsWith("#")).toList();
         }
 
         return Collections.unmodifiableList(cleanedLines);
@@ -175,17 +164,17 @@ public class ChatDMDir {
     }
 
     /**
-     * Reads the file from the dmDir. Will throw
-     * {@linke IllegalArgumentException} if the file is outside of the DM Dir.
+     * Reads the file from the dmDir. Will throw {@linke IllegalArgumentException} if the file is outside of the DM Dir.
      * If the filename ends in <code>.st</code>, the file is assumed to be <a
-     * href="https://github.com/antlr/stringtemplate4/blob/master/doc/introduction.md">a
-     * stringtemplate4 file</a> and processed as such.
+     * href="https://github.com/antlr/stringtemplate4/blob/master/doc/introduction.md">a stringtemplate4 file</a> and
+     * processed as such.
      *
      * @param fileName the file to read
      * @param args     a map of arguments to pass to the ST file. Can be null.
      * @return the contents of the file as a {@link String}.
      */
-    String readSTFile(Path fileName, Map<String, Object> args) throws IOException {
+    String readSTFile(Path fileName,
+                      Map<String, Object> args) throws IOException {
 
         throwIfInvalidFile(fileName);
         // all good
@@ -218,19 +207,20 @@ public class ChatDMDir {
      * @param content  the contents to write.
      * @throws IOException
      */
-    void writeFile(String fileName, String content) throws IOException {
+    void writeFile(String fileName,
+                   String content) throws IOException {
         writeFile(Path.of(fileName), content);
     }
 
     /**
-     * Writes a file in the chatdmdir. <code>fileName</code> can include
-     * directories.</code>
+     * Writes a file in the chatdmdir. <code>fileName</code> can include directories.</code>
      *
      * @param fileName
      * @param content
      * @throws IOException
      */
-    void writeFile(Path fileName, String content) throws IOException {
+    void writeFile(Path fileName,
+                   String content) throws IOException {
 
         // Will check for absolute filename and upwards traversal
         // for basic security checks.
@@ -261,11 +251,9 @@ public class ChatDMDir {
         // (2) We only want files, not directories.
         if (fileName.isAbsolute()) {
             throw new IllegalArgumentException(
-                    String.format("File name must be relative to chatdmdir",
-                                  easyChatDir, fileName));
+              String.format("File name must be relative to chatdmdir", easyChatDir, fileName));
         } else if (containsUpwardTraversal(fileName)) {
-            throw new IllegalArgumentException(
-                    "File name cannot contain upward traversal: " + fileName);
+            throw new IllegalArgumentException("File name cannot contain upward traversal: " + fileName);
         }
 
     }

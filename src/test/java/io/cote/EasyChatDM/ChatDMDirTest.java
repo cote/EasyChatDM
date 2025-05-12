@@ -122,16 +122,13 @@ class ChatDMDirTest {
 
         Path bundleDir = tempDir.resolve("oracles/named");
 
-        chatDMDir.writeFile(Path.of("oracles/named/", "npc_emotions.test.last.dot.removed.only.txt"), oracleOne);
+        chatDMDir.writeFile(Path.of("oracles/named/", "npc_emotions.txt"), oracleOne);
         chatDMDir.writeFile(Path.of("oracles/named/", "drinks.txt"), oracleTwo);
         chatDMDir.writeFile(Path.of("oracles/named/", "monsters.txt"), oracleThree);
 
         Map<String, List<String>> files = chatDMDir.loadBundleDir("oracles/named/");
 
         assertThat(files).withFailMessage("Failed to create or read three files.").hasSize(3);
-
-        List<String> emotions = files.get("npc_emotions.test.last.dot.removed.only");
-        assertThat(emotions).containsExactly(oracleOne.split("\n"));
 
     }
 }

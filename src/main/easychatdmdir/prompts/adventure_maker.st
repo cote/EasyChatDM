@@ -10,7 +10,7 @@ if you see a reference like {{gum2_setup_mission}} you should call the named ora
 and use that as the value in the template. There may be multiple oracles references like this.
 If you cannot find that oracle, make something up based on the name of the oracle
 
-2. Use your have as well as the context memory  you have from this and past session. In
+2. Use your have as well as the context memory you have from this and past session. In
 particular pay attention to the interesting features that PCs have, their background, and
 past interactions and tailor the adventure to those attributes to make it more fun.
 
@@ -37,4 +37,4 @@ The mission: {{gum2_setup_mission}}.
 Motivation: {{gum2_setup_motivation}}
 Initial lead: {{gum2_setup_lead}}.
 The opposition: {{gum2_setup_opposition}}.
-Caveat: {{gum2_setup_caveat}}.
+Caveat: {{gum2_setup_caveat}}

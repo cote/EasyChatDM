@@ -24,18 +24,6 @@ public class AdventureMCPPrompt {
         this.chatDMDir = chatDMDir;
     }
 
-    /*
-    Tell it Oracles to call and what
-    to do with the result.
-
-    Also, questions to ask the PC.
-
-    This is a test to see how much orchistration
-    I can do.
-
-    adventure_maker.st
-    */
-
     @Bean
     List<McpServerFeatures.SyncPromptSpecification> adventurePrompt() {
         // @formatter:off
@@ -64,7 +52,7 @@ public class AdventureMCPPrompt {
                 No adventure was found, so make one up based on a NPC leaving a bag of something
                 and a note next to the NPC, either outside their door, at their table, or just
                 throwing it at their feet. Be creative and don't use cliches. Use any oracles you
-                have to build up parts of your adventure, and remember to NOT share the advenute
+                have to build up parts of your adventure, and remember to NOT share the adventure's
                 outline with the player. You should also note an outline of your adventure in
                 the DM Journal so that you can remember it for later.
                 """;

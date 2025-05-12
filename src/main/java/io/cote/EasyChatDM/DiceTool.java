@@ -20,7 +20,7 @@ public class DiceTool {
     @Tool(name = "EasyChatDM_rollDice",
           description = """
                   Rolls dice according to the syntax defined in the D&D 5e rules.
-                  Returns total of all dice rolled. 
+                  Returns total of all dice rolled.
                   """)
     public String roll(@ToolParam(description =
                                     "Notation for dice to roll such a d6, 2d4+4, 3d6, d20-3, 1d20+7 etc.")

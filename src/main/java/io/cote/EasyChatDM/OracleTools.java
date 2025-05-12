@@ -114,13 +114,17 @@ public class OracleTools {
         return look;
     }
 
-    @Tool(name = "EasyChatDM_NPC_Motivations", description = """
-                                                             Use this to determine an NPC's current motivation, mindset, and overall mood. For example,
-                                                             if you've created a new NPC, call this to figure out their current state of mind. Or, if it's
-                                                             an NPC you've interacted with before, call this to see how they feel about the player, situation,
-                                                             etc. You don't have to be strict in how you apply the result, it can be just inspiration, or you
-                                                             could just take it word for word.
-                                                             """)
+    // @formatter:off
+    @Tool(name = "EasyChatDM_NPC_Motivations",
+          description = """
+            Use this to determine an NPC's current motivation, mindset, and overall mood.
+            For example,if you've created a new NPC, call this to figure out their current
+            state of mind. Or, if it's an NPC you've interacted with before, call this to
+            see how they feel about the player, situation, etc. You don't have to be strict
+            in how you apply the result, it can be just inspiration, or you
+            could just take it word for word.
+            """)
+    // @formatter:on
     public String npcMotivation(@ToolParam(description = "The context of this question: why are you doing this check and what might you do with the result.", required = true) String questionContext) throws IOException {
         List<String> motivations = chatDMDir.getAllLines("oracles/npc_motivations.txt");
         String motivation = pickRandom(motivations);
