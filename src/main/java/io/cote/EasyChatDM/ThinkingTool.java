@@ -42,7 +42,7 @@ public class ThinkingTool {
                               required = true) String context,
                         @ToolParam(description= "the thinking", required = true)
                         String thought) {
-        logger.info("ThinkingTool called with contect {} and thought {}", context, thought);
+        logger.info("ThinkingTool called with context {} and thought {}", context, thought);
         return "I'm thinking about <thought>" + thought + "</thought>";
     }
 
