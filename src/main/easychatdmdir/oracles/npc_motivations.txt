@@ -1,4 +1,4 @@
-# 300 NPC Motivations
+# 303 NPC Motivations
 1. Revenge
 2. Lost love
 3. Climbing the social ladder
@@ -299,3 +299,6 @@
 298. Seeking to understand why they dream of places they've never been
 299. Trying to forge peace between warring elemental factions
 300. Haunted by memories of a life they never lived
+301. Wants to sell finely crafted gnome cups, will accept a discount
+302. Wants to capture a soul to trade with a night hag to get their soul back
+303. Looking for recommendations for a nice spot to take a nap
