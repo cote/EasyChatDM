@@ -55,18 +55,24 @@ public class OracleTools {
           description = """
                         When playing Dungeons and Dragons (DnD), use this oracle tool to determine 
                         open ended questions that can lead to unexpected plot points. You should 
-                        determine an interpretation of the answer
-                        rather than having it be a clear, binary yes or no.
-                        For example, your PCs may not yet be ready to know the answer at all, 
-                        and need to figure out another way to find an answer, 
-                        or it might require a skill test to figure it out before they can, 
-                        or perhaps they have to hurry up a to find out. 
-                        Play with the answers in a fun way.
+                        determine an interpretation of the answer rather than having it be a clear, 
+                        binary yes or no. The answers may be clear ("yes" or "no"), or they may
+                        lead to more details. For example, "No, not yet..." might mean an action
+                        will happen in the future, perhpas because the player triggered it, or not.
+                        "It depends..." might mean the player needs to take some action or perform
+                        a skills check. For example, your PCs may not yet be ready to know the answer 
+                        at all, and need to figure out another way to find an answer, or it might 
+                        require a skill test to figure it out before they can, or perhaps they have to 
+                        hurry up a to find out. Play with the answers in a fun way.
                         """
     )
-    public String subjectiveOracle(@ToolParam(description = MCPUtils.CONTEXT_DESCRIPTION, required = true)
+    public String subjectiveOracle(@ToolParam(description = MCPUtils.CONTEXT_DESCRIPTION)
                                     String questionContext) {
-        String[] answers = {"No, definitely not", "Apparently not", "No, not yet...", "No, but...", "Don't know, can't tell", "It depends (on skills check)", "Yes, but...", "Yes, for now", "Yes, apparently", "Yes, absolutely"};
+        String[] answers = {"No, definitely not", "Apparently not",
+                            "No, not yet...", "No, but...",
+                            "Don't know, can't tell", "It depends...",
+                            "Yes, but...", "Yes, for now",
+                            "Yes, apparently", "Yes, absolutely"};
 
         String answer = pickRandom(answers);
         logger.info("Deterministic OracleTools called: {} -> {}", questionContext, answer);
