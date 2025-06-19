@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * A "thinking tool" based on
- * <a href="https://www.anthropic.com/engineering/claude-think-tool"></a>the Anthropic blog post on this topic</a>.
+ * <a href="https://www.anthropic.com/engineering/claude-think-tool">the Anthropic blog post on this topic</a>.
  *
  * The thinking tool just takes the input and returns it. This gives the MCP Client the chance to use it
  * as a scratchpad - it takes time to think something when it makes the tool call, generates the thought, and then
