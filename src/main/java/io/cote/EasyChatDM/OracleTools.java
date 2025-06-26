@@ -66,8 +66,8 @@ public class OracleTools {
                         hurry up a to find out. Play with the answers in a fun way.
                         """
     )
-    public String subjectiveOracle(@ToolParam(description = MCPUtils.CONTEXT_DESCRIPTION)
-                                    String questionContext) {
+    public String subjectiveOracle(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION)
+                                    String intent) {
         String[] answers = {"No, definitely not", "Apparently not",
                             "No, not yet...", "No, but...",
                             "Don't know, can't tell", "It depends...",
@@ -75,7 +75,7 @@ public class OracleTools {
                             "Yes, apparently", "Yes, absolutely"};
 
         String answer = pickRandom(answers);
-        logger.info("Deterministic OracleTools called: {} -> {}", questionContext, answer);
+        logger.info("Deterministic OracleTools called: {} -> {}", intent, answer);
         return answer;
     }
 
@@ -143,14 +143,14 @@ public class OracleTools {
                                                           Use the result as your inspiration for what happens next, how to describe
                                                           something,etc.
                                                           """)
-    public String namedOracle(@ToolParam(description = MCPUtils.CONTEXT_DESCRIPTION) String context,
+    public String namedOracle(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent,
                               @ToolParam(description = "Name of oracle to be used. If you do not know the name of any Oracles, call the EasyChatDM_list_named_oracles tool.") String oracleName) throws IOException {
 
         Map<String, List<String>> bundles = chatDMDir.loadBundleDir("oracles/named/");
         if (bundles.containsKey(oracleName)) {
             List<String> lines = bundles.get(oracleName);
             String answer = pickRandom(lines);
-            logger.info("Named OracleTools called: {} -> {}", context, answer);
+            logger.info("Named OracleTools called: {} -> {}", intent, answer);
             return answer;
         } else {
             return "(No oracle by that name, make up your own answer based on what Susan Sontag would say.)";
@@ -178,11 +178,11 @@ public class OracleTools {
             EasyChatDM_NPC_Motivations that you should use instead of a named oracle that
             determines NPC Motivations. Or not, you decide how crazy you want to be. Use both 
             and choose which answer is coolest, or most dreadful, depending on the situation.""")
-    public List<String> listNamedOracles(@ToolParam(description = MCPUtils.CONTEXT_DESCRIPTION) String context) throws IOException {
+    public List<String> listNamedOracles(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent) throws IOException {
 
         Map<String, List<String>> bundles = chatDMDir.loadBundleDir("oracles/named/");
         List<String> oracleNames = List.copyOf(bundles.keySet());
-        logger.info("List OracleTools called with context {} listing oracles {}", context, oracleNames);
+        logger.info("List OracleTools called with context {} listing oracles {}", intent, oracleNames);
 
         return oracleNames;
     }

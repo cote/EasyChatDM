@@ -30,10 +30,4 @@ public class EasyChatDmApplication {
     public ToolCallbackProvider dice(DiceTool tool) {
         return MethodToolCallbackProvider.builder().toolObjects(tool).build();
     }
-
-    @Bean
-    public ToolCallbackProvider think(ThinkingTool tool) {
-        return MethodToolCallbackProvider.builder().toolObjects(tool).build();
-    }
-
 }

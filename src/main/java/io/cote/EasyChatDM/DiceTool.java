@@ -25,14 +25,14 @@ public class DiceTool {
     public String roll(@ToolParam(description =
                                     "Notation for dice to roll such a d6, 2d4+4, 3d6, d20-3, 1d20+7 etc.")
                                   String diceExpression,
-                       @ToolParam(description = MCPUtils.CONTEXT_DESCRIPTION, required = true) String context) {
+                       @ToolParam(description = MCPUtils.INTENT_DESCRIPTION, required = true) String intent) {
 
         DiceParser diceParser = new DefaultDiceParser();
         // DiceParser does not like spaces ¯\_(ツ)_/¯
         String nospaces = diceExpression.replaceAll("\\s", "");
         RollHistory rolls = new DefaultDiceParser().parse(nospaces, new DiceRoller());
         logger.info("Dice {} rolled resulting in {} total, dice rolled {} Context: {}", diceExpression,
-                    rolls.getTotalRoll(), rolls.getRollResults(), context);
+                    rolls.getTotalRoll(), rolls.getRollResults(), intent);
         return rolls.getTotalRoll().toString();
     }
 }

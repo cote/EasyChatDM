@@ -52,8 +52,8 @@ public class DMMCPPrompt {
                      should be followed carefully and followed.
                      """,
            List.of(
-                   new PromptArgument("context",
-                                                MCPUtils.CONTEXT_DESCRIPTION,
+                   new PromptArgument("intent",
+                                                MCPUtils.INTENT_DESCRIPTION,
                                         false),
                    new PromptArgument(
                            "ExtraInfo",

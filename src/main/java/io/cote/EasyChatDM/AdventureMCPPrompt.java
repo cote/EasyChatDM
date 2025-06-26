@@ -31,8 +31,8 @@ public class AdventureMCPPrompt {
                 This is a prompt that will give you a template for creating an adventure.
                 Follow the instructions in it carefully
                 """, List.of(
-          new McpSchema.PromptArgument("context",
-                                       MCPUtils.CONTEXT_DESCRIPTION,
+          new McpSchema.PromptArgument("intent",
+                                       MCPUtils.INTENT_DESCRIPTION,
                                        false),
           new McpSchema.PromptArgument(
             "Length",
