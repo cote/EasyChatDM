@@ -58,12 +58,10 @@ public class ChatDMDir {
     }
 
     /**
-     * Get the files for a "bundle." The "bundle" could be things like oracles, prompts, etc.
-     * The bundles are kept in the <code>.easydm</code> directory, which is set by
-     * the property <code>easychatdm.dir</code> and defaults to <code>~/.easychatdm</code>.
-     * So, <code>bundleName</code> is just the name of a subdirectory in the easychatdm directory.
-     * The directory is loaded recurssivly, and you're not allowed to look "up" in the directory
-     * structure.
+     * Get the files for a "bundle." The "bundle" could be things like oracles, prompts, etc. The bundles are kept in
+     * the <code>.easydm</code> directory, which is set by the property <code>easychatdm.dir</code> and defaults to
+     * <code>~/.easychatdm</code>. So, <code>bundleName</code> is just the name of a subdirectory in the easychatdm
+     * directory. The directory is loaded recurssivly, and you're not allowed to look "up" in the directory structure.
      *
      * @param bundleName the name of the bundle, like "oracle."
      * @return a {@link Map} of file name -> contents of file.
@@ -72,12 +70,10 @@ public class ChatDMDir {
 
         Path bundleDirFragment = Path.of(bundleName);
         throwIfInvalidFile(bundleDirFragment);
-
         Path bundleDir = easyChatDir.resolve(bundleDirFragment);
+        throwIfInvalidFile(bundleDirFragment);
         logger.debug("bundle dir is now {}", bundleDir);
-        if (containsUpwardTraversal(bundleDir)) {
-            throw new IllegalArgumentException("Bundle name cannot contain upward traversal: " + bundleName);
-        } else if (!Files.isDirectory(bundleDir)) {
+        if (!Files.isDirectory(bundleDir)) {
             logger.debug("bundle dir {} does not exist or is not a directory", bundleDir);
             return Collections.emptyMap();
         }
@@ -88,13 +84,7 @@ public class ChatDMDir {
               p -> acceptedFileFormat(p.getFileName().toString())).collect(
               Collectors.toMap(p -> p.getFileName().toString(), p -> {
                   try {
-                      // Now we need to relative paths again for the validation
-                      // check to avoid passing in an absolute path.
-                      String relativePath = p.getFileName().toString();
-                      Path bundleFile = Path.of(bundleName, relativePath);
-
-                      return new String(Files.readAllBytes(bundleFile));
-                      //return getAllLines(Path.of(bundleName, relativePath));
+                      return Files.readString(p);
                   } catch (IOException e) {
                       logger.warn("Failed to read file {}", p, e);
                       return "";
