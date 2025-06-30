@@ -26,7 +26,7 @@ class ChatDMDirTest {
     @Autowired
     ChatDMDir chatDMDir;
 
-    // make sure we're use the test's tempdir.
+    // make sure we're using the test's tempdir.
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
         registry.add("easychatdm.dir", () -> tempDir.toString());
@@ -126,7 +126,7 @@ class ChatDMDirTest {
         chatDMDir.writeFile(Path.of("oracles/named/", "drinks.txt"), oracleTwo);
         chatDMDir.writeFile(Path.of("oracles/named/", "monsters.txt"), oracleThree);
 
-        Map<String, List<String>> files = chatDMDir.loadBundleDir("oracles/named/");
+        Map<String, String> files = chatDMDir.loadBundleDir("oracles/named/");
 
         assertThat(files).withFailMessage("Failed to create or read three files.").hasSize(3);
 
