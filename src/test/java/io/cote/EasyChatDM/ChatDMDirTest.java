@@ -130,5 +130,8 @@ class ChatDMDirTest {
 
         assertThat(files).withFailMessage("Failed to create or read three files.").hasSize(3);
 
+        assertThat( files.get("npc_emotions.txt")).isEqualToIgnoringWhitespace(oracleOne);
+        assertThat( files.get("drinks.txt")).isEqualToIgnoringWhitespace(oracleTwo);
+        assertThat( files.get("monsters.txt")).isEqualToIgnoringWhitespace(oracleThree);
     }
 }
