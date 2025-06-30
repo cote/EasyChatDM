@@ -57,7 +57,18 @@ public class ChatDMDir {
         logger.debug("EasyChatDM dir is {}", easyChatDir);
     }
 
-    Map<String, List<String>> loadBundleDir(String bundleName) {
+    /**
+     * Get the files for a "bundle." The "bundle" could be things like oracles, prompts, etc.
+     * The bundles are kept in the <code>.easydm</code> directory, which is set by
+     * the property <code>easychatdm.dir</code> and defaults to <code>~/.easychatdm</code>.
+     * So, <code>bundleName</code> is just the name of a subdirectory in the easychatdm directory.
+     * The directory is loaded recurssivly, and you're not allowed to look "up" in the directory
+     * structure.
+     *
+     * @param bundleName the name of the bundle, like "oracle."
+     * @return a {@link Map} of file name -> contents of file.
+     */
+    Map<String, String> loadBundleDir(String bundleName) {
 
         Path bundleDirFragment = Path.of(bundleName);
         throwIfInvalidFile(bundleDirFragment);
@@ -78,12 +89,15 @@ public class ChatDMDir {
               Collectors.toMap(p -> p.getFileName().toString(), p -> {
                   try {
                       // Now we need to relative paths again for the validation
-                      // check to avoid passing in a absolute path.
+                      // check to avoid passing in an absolute path.
                       String relativePath = p.getFileName().toString();
-                      return getAllLines(Path.of(bundleName, relativePath));
+                      Path bundleFile = Path.of(bundleName, relativePath);
+
+                      return new String(Files.readAllBytes(bundleFile));
+                      //return getAllLines(Path.of(bundleName, relativePath));
                   } catch (IOException e) {
                       logger.warn("Failed to read file {}", p, e);
-                      return Collections.emptyList();
+                      return "";
                   }
               }));
         } catch (IOException e) {
@@ -164,7 +178,7 @@ public class ChatDMDir {
     }
 
     /**
-     * Reads the file from the dmDir. Will throw {@linke IllegalArgumentException} if the file is outside of the DM Dir.
+     * Reads the file from the dmDir. Will throw {@link IllegalArgumentException} if the file is outside of the DM Dir.
      * If the filename ends in <code>.st</code>, the file is assumed to be <a
      * href="https://github.com/antlr/stringtemplate4/blob/master/doc/introduction.md">a stringtemplate4 file</a> and
      * processed as such.

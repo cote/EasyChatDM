@@ -146,9 +146,9 @@ public class OracleTools {
     public String namedOracle(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent,
                               @ToolParam(description = "Name of oracle to be used. If you do not know the name of any Oracles, call the EasyChatDM_list_named_oracles tool.") String oracleName) throws IOException {
 
-        Map<String, List<String>> bundles = chatDMDir.loadBundleDir("oracles/named/");
+        Map<String, String> bundles = chatDMDir.loadBundleDir("oracles/named/");
         if (bundles.containsKey(oracleName)) {
-            List<String> lines = bundles.get(oracleName);
+            List<String> lines = toLines(bundles.get(oracleName));
             String answer = pickRandom(lines);
             logger.info("Named OracleTools called: {} -> {}", intent, answer);
             return answer;
@@ -180,12 +180,14 @@ public class OracleTools {
             and choose which answer is coolest, or most dreadful, depending on the situation.""")
     public List<String> listNamedOracles(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent) throws IOException {
 
-        Map<String, List<String>> bundles = chatDMDir.loadBundleDir("oracles/named/");
+        Map<String, String> bundles = chatDMDir.loadBundleDir("oracles/named/");
         List<String> oracleNames = List.copyOf(bundles.keySet());
         logger.info("List OracleTools called with context {} listing oracles {}", intent, oracleNames);
 
         return oracleNames;
     }
+
+
 
     private String pickRandom(List<String> lines) {
         if (!lines.isEmpty()) {
@@ -197,6 +199,17 @@ public class OracleTools {
 
     private String pickRandom(String[] lines) {
         return pickRandom(List.of(lines));
+    }
+
+    /**
+     * Splits the input string into lines, trims whitespace, filters out empty lines and comments (lines starting with '#'),
+     * and returns a list of cleaned lines.
+     */
+    private List<String> toLines(String fileContent) {
+        return fileContent.lines()
+                          .map(String::trim)
+                          .filter(line -> !line.isEmpty() && !line.startsWith("#"))
+                          .toList();
     }
 
 }
