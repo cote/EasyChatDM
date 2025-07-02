@@ -1,0 +1,17 @@
+"PUM_How_Hard":
+  description: Use this oracle to randomly determine how difficult a task is.
+  type: oracle
+  author: Plot Unfolding Machine, v8, JeansenVaars
+  version: 1.0
+  category: Difficulty
+  results:
+    - Very easy, or not worth it
+    - Way easier than expected
+    - A bit easier than expected
+    - As expected
+    - As expected
+    - As expected
+    - As expected
+    - A bit harder than expected
+    - Way harder than expected
+    - Overwhelming, or impossible
