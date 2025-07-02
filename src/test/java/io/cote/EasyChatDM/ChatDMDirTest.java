@@ -115,12 +115,10 @@ class ChatDMDirTest {
         // This gets a little confusing if you trace/dig into the code because of the handling
         // I put into the ChatDMDir to keep people from passing in absolute file paths.
 
-        // create some dummy files
+        // create some test files
         String oracleOne = "Sad\nHappy\nMad\nBored";
         String oracleTwo = "Tea\nAle\nCoffee\nWater\nWine";
         String oracleThree = "Troll\nOgre\nHill Giant\nBronze Dragon";
-
-        Path bundleDir = tempDir.resolve("oracles/named");
 
         chatDMDir.writeFile(Path.of("oracles/named/", "npc_emotions.txt"), oracleOne);
         chatDMDir.writeFile(Path.of("oracles/named/", "drinks.txt"), oracleTwo);
@@ -128,10 +126,26 @@ class ChatDMDirTest {
 
         Map<String, String> files = chatDMDir.loadBundleDir("oracles/named/");
 
-        assertThat(files).withFailMessage("Failed to create or read three files.").hasSize(3);
+        assertThat(files).withFailMessage("Did not create 3 top-level files.").hasSize(3);
 
         assertThat( files.get("npc_emotions.txt")).isEqualToIgnoringWhitespace(oracleOne);
         assertThat( files.get("drinks.txt")).isEqualToIgnoringWhitespace(oracleTwo);
         assertThat( files.get("monsters.txt")).isEqualToIgnoringWhitespace(oracleThree);
+
+        // Test nested and that nested don't overlap
+
+        chatDMDir.writeFile(Path.of("oracles/named/npcs/", "npc_emotions.txt"), oracleOne);
+        chatDMDir.writeFile(Path.of("oracles/named/drinks/", "drinks.txt"), oracleTwo);
+        chatDMDir.writeFile(Path.of("oracles/named/monsters/", "monsters.txt"), oracleThree);
+
+        Map<String, String> filesNested = chatDMDir.loadBundleDir("oracles/named/");
+        assertThat(filesNested).withFailMessage("Did not create 6 nested files.").hasSize(6);
+
+        assertThat( filesNested.get("npcs/npc_emotions.txt")).isEqualToIgnoringWhitespace(oracleOne);
+        assertThat( filesNested.get("drinks/drinks.txt")).isEqualToIgnoringWhitespace(oracleTwo);
+        assertThat( filesNested.get("monsters/monsters.txt")).isEqualToIgnoringWhitespace(oracleThree);
+
     }
+
+
 }

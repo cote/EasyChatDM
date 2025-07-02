@@ -61,12 +61,18 @@ public class ChatDMDir {
      * Get the files for a "bundle." The "bundle" could be things like oracles, prompts, etc. The bundles are kept in
      * the <code>.easydm</code> directory, which is set by the property <code>easychatdm.dir</code> and defaults to
      * <code>~/.easychatdm</code>. So, <code>bundleName</code> is just the name of a subdirectory in the easychatdm
-     * directory. The directory is loaded recurssivly, and you're not allowed to look "up" in the directory structure.
+     * directory.
+     *
+     * The directory is loaded recurssivly, and you're not allowed to look "up" in the directory structure.
+     * The keys in the returned {@link Map} will be the name of the file and then the relative base directory if the file was
+     * from a subdirctoy. For example, if the file <code>npc_smell.yaml</code> is in the directory
+     * indicated by <code>bundleName</code>, the key will be <code>npc_smell.yaml</code>. If that file
+     * was in the sub-directory "npcs" then the key will be <code>npcs/npc_smell.yaml</code>.
      *
      * @param bundleName the name of the bundle, like "oracle."
      * @return a {@link Map} of file name -> contents of file.
      */
-    Map<String, String> loadBundleDir(String bundleName) {
+    public Map<String, String> loadBundleDir(String bundleName) {
 
         Path bundleDirFragment = Path.of(bundleName);
         throwIfInvalidFile(bundleDirFragment);
@@ -79,10 +85,11 @@ public class ChatDMDir {
         }
 
         // All good!
+
         try (Stream<Path> paths = Files.walk(bundleDir)) {
             return paths.filter(Files::isRegularFile).filter(
               p -> acceptedFileFormat(p.getFileName().toString())).collect(
-              Collectors.toMap(p -> p.getFileName().toString(), p -> {
+              Collectors.toMap(p -> bundleDir.relativize(p).toString(), p -> {
                   try {
                       return Files.readString(p);
                   } catch (IOException e) {
