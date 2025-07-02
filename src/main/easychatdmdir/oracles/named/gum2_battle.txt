@@ -1,1 +1,0 @@
-Location: {{gum2_battle_location}}. Enemy tactics: {{gum2_battle_tactics}}. Enemy composition: {{gum2_battle_composition}}.
