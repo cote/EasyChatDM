@@ -175,7 +175,7 @@ public class ChatDMDir {
     }
 
     /**
-     * Reads the file from the dmDir. Will throw {@link IllegalArgumentException} if the file is outside of the DM Dir.
+     * Reads the file from the dmDir. Will throw {@link IllegalArgumentException} if the file is outside the DM Dir.
      * If the filename ends in <code>.st</code>, the file is assumed to be <a
      * href="https://github.com/antlr/stringtemplate4/blob/master/doc/introduction.md">a stringtemplate4 file</a> and
      * processed as such.
@@ -218,7 +218,7 @@ public class ChatDMDir {
      * @param content  the contents to write.
      * @throws IOException
      */
-    void writeFile(String fileName,
+    public void writeFile(String fileName,
                    String content) throws IOException {
         writeFile(Path.of(fileName), content);
     }
@@ -230,7 +230,7 @@ public class ChatDMDir {
      * @param content
      * @throws IOException
      */
-    void writeFile(Path fileName,
+    public void writeFile(Path fileName,
                    String content) throws IOException {
 
         // Will check for absolute filename and upwards traversal

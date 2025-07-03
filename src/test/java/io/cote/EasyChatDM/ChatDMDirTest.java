@@ -17,7 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-  //@TestPropertySource(properties = {"easychatdm.dir=${java.io.tmpdir}"})
 class ChatDMDirTest {
 
     @TempDir

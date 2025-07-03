@@ -1,5 +1,6 @@
 package io.cote.EasyChatDM;
 
+import io.cote.EasyChatDM.oracle.Oracle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
@@ -149,7 +150,8 @@ public class OracleTools {
         Map<String, String> bundles = chatDMDir.loadBundleDir("oracles/named/");
         if (bundles.containsKey(oracleName)) {
             List<String> lines = toLines(bundles.get(oracleName));
-            String answer = pickRandom(lines);
+            Oracle o = new Oracle(oracleName, "",Map.of(),lines);
+            String answer = o.randomResult();
             logger.info("Named OracleTools called: {} -> {}", intent, answer);
             return answer;
         } else {
