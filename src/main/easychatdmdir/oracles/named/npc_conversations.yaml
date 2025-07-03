@@ -1,6 +1,13 @@
 NPC Conversations:
   description: >
-    Use this table to generate spontaneous or pre-scripted NPC dialogue topics—especially useful in taverns, streets, downtime scenes, or during social events. Roll when a player strikes up conversation, listens in on chatter, or asks, “What are folks talking about?” Interpret the result as either the subject the NPC *wants* to discuss, or something they *accidentally reveal* while talking. Tailor tone by NPC type: a town crier may shout a current event, while a nervous shopkeep might mutter about mysterious shadows. For story-rich entries, treat them as rumors, clues, or hooks, not definitive truth—unless you want them to be.
+    Use this table to generate spontaneous or pre-scripted NPC dialogue topics—especially 
+    useful in taverns, streets, downtime scenes, or during social events. 
+    Roll when a player strikes up conversation, listens in on chatter, or asks, 
+    “What are folks talking about?” Interpret the result as either the subject the 
+    NPC *wants* to discuss, or something they *accidentally reveal* while talking. 
+    Tailor tone by NPC type: a town crier may shout a current event, while a nervous 
+    shopkeep might mutter about mysterious shadows. For story-rich entries, treat them as rumors, 
+    clues, or hooks, not definitive truth—unless you want them to be.
     Examples:
     - A bard in the inn shares “A haunting melody...” and offers to perform it—players might hear the tune themselves later.
     - A local elder rants about “Theories about the graveyard soil...” sparking a spooky side quest.
@@ -8,7 +15,7 @@ NPC Conversations:
   type: random
   version: "1.0"
   author: "Claude based on PUM?"
-  result:
+  results:
     - "A PC secret that has been made known"
     - "A personal injury"
     - "A recent change in the family of an NPC"
