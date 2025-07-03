@@ -23,14 +23,14 @@ public class DMMCPPrompt {
     private final ChatDMDir chatDMDir;
     private static final Path STARTUP_PROMPT_FILE_PATH = Path.of("prompts/dm_startup.st");
 
-    private static final String defaultPrompt = """
-                                         You are a Dungeons and Dragons DM, folling D&D 5th edition rules.
-                                         The player has complete control over their character's actions.
-                                         Be inventive and fun, follow the rules, and follow the rule of cool.
-                                         Limit responses to three or less sentences unless directed otherwise.
-                                         You likely have access to several MCP tools, resources, and prompts.
-                                         Asses what you have and use them wisely, not excessivly 
-                                         """;
+    private static final String DEFAULT_PROMPT = """
+                                                You are a Dungeons and Dragons DM, following D&D 5th edition rules.
+                                                The player has complete control over their character's actions.
+                                                Be inventive and fun, follow the rules, and follow the rule of cool.
+                                                Limit responses to three or less sentences unless directed otherwise.
+                                                You likely have access to several MCP tools, resources, and prompts.
+                                                Asses what you have and use them wisely, not excessively. 
+                                                """;
 
     public DMMCPPrompt(ChatDMDir chatDMDir) {
         this.chatDMDir = chatDMDir;
@@ -61,29 +61,27 @@ public class DMMCPPrompt {
                                      Extra instructions given by the player about  
                                      how they'd like to play, ongoing information, 
                                      or anything they'd like the ChatDM to know. 
-                                     """, true)
+                                     """, false)
                    ));
 
-        // Build the prompt specificatio, including the return functionality.
+        // Build the prompt specification, including the return functionality.
         var syncPromptSpecification = new SyncPromptSpecification(
                 prompt,
                 (exchange, request) ->
                 {
-                    String promptText =
-                            """
-                            No instructions given. Be an awesome D&D 5e Dungeon Master. 
-                            Ask the player for more guidance.
-                            """;
+                    String promptText = DEFAULT_PROMPT;
 
                     // Make sure we have ExtraInfo args
                     // otherwise ST throws up.
                     var fixedArgs = new HashMap<>(
                             request.arguments());
-                       fixedArgs.putIfAbsent("ExtraInfo", "");
+
+                    fixedArgs.putIfAbsent("ExtraInfo", "No extra info given. Ask the player for more guidance.");
 
                     // Load up full prompt from chatdmdir
                     try {
                         promptText = chatDMDir.readSTFile(STARTUP_PROMPT_FILE_PATH, fixedArgs);
+                        logger.debug("Startup prompt text: {}", promptText);
                     } catch (IOException e) {
                         logger.error("Using hard-coded Startup prompt. Could not read DM Startup Prompt file {}",
                                      STARTUP_PROMPT_FILE_PATH, e);
