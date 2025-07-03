@@ -1,8 +1,10 @@
 package io.cote.EasyChatDM;
 
 import io.cote.EasyChatDM.oracle.Oracle;
+import io.cote.EasyChatDM.oracle.OracleRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Role playing game Oracles to answer yes/no questions. Based on the <a
@@ -23,10 +26,10 @@ public class OracleTools {
 
     private final Logger logger = LoggerFactory.getLogger(OracleTools.class);
     private final Random random = new Random();
-    private final ChatDMDir chatDMDir;
+    private final OracleRegistry oracleRegistry;
 
-    public OracleTools(ChatDMDir chatDMDir) {
-        this.chatDMDir = chatDMDir;
+    public OracleTools(OracleRegistry oracleRegistry) {
+        this.oracleRegistry = oracleRegistry;
     }
 
     // Tool name cannot have spaces. Start EasyChatDM to make searching logs easier.
@@ -52,28 +55,21 @@ public class OracleTools {
         return Map.of("deterministic oracle answer", answer);
     }
 
-    @Tool(name = "EasyChatDM_Subjective_Oracle",
-          description = """
-                        When playing Dungeons and Dragons (DnD), use this oracle tool to determine 
-                        open ended questions that can lead to unexpected plot points. You should 
-                        determine an interpretation of the answer rather than having it be a clear, 
-                        binary yes or no. The answers may be clear ("yes" or "no"), or they may
-                        lead to more details. For example, "No, not yet..." might mean an action
-                        will happen in the future, perhpas because the player triggered it, or not.
-                        "It depends..." might mean the player needs to take some action or perform
-                        a skills check. For example, your PCs may not yet be ready to know the answer 
-                        at all, and need to figure out another way to find an answer, or it might 
-                        require a skill test to figure it out before they can, or perhaps they have to 
-                        hurry up a to find out. Play with the answers in a fun way.
-                        """
-    )
-    public String subjectiveOracle(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION)
-                                    String intent) {
-        String[] answers = {"No, definitely not", "Apparently not",
-                            "No, not yet...", "No, but...",
-                            "Don't know, can't tell", "It depends...",
-                            "Yes, but...", "Yes, for now",
-                            "Yes, apparently", "Yes, absolutely"};
+    @Tool(name = "EasyChatDM_Subjective_Oracle", description = """
+                                                               When playing Dungeons and Dragons (DnD), use this oracle tool to determine 
+                                                               open ended questions that can lead to unexpected plot points. You should 
+                                                               determine an interpretation of the answer rather than having it be a clear, 
+                                                               binary yes or no. The answers may be clear ("yes" or "no"), or they may
+                                                               lead to more details. For example, "No, not yet..." might mean an action
+                                                               will happen in the future, perhpas because the player triggered it, or not.
+                                                               "It depends..." might mean the player needs to take some action or perform
+                                                               a skills check. For example, your PCs may not yet be ready to know the answer 
+                                                               at all, and need to figure out another way to find an answer, or it might 
+                                                               require a skill test to figure it out before they can, or perhaps they have to 
+                                                               hurry up a to find out. Play with the answers in a fun way.
+                                                               """)
+    public String subjectiveOracle(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent) {
+        String[] answers = {"No, definitely not", "Apparently not", "No, not yet...", "No, but...", "Don't know, can't tell", "It depends...", "Yes, but...", "Yes, for now", "Yes, apparently", "Yes, absolutely"};
 
         String answer = pickRandom(answers);
         logger.info("Deterministic OracleTools called: {} -> {}", intent, answer);
@@ -95,8 +91,8 @@ public class OracleTools {
                                The context must be at least 50 words long, but can be as long as 300 words.
                                """, required = true) String questionContext) throws IOException {
         // Inspired and extended from the Juice OracleTools: https://thunder9861.itch.io/juice-oracle
-        List<String> lines = chatDMDir.getAllLines("oracles/npc_conversations.txt");
-        String topic = pickRandom(lines);
+        Oracle npcConvos = oracleRegistry.get("npc_conversations");
+        String topic = npcConvos.randomResult();
         logger.info("Conversations OracleTools called {} -> {}", questionContext, topic);
         return topic;
     }
@@ -115,8 +111,8 @@ public class OracleTools {
                                                                """)
     public String descriptionLooksOracle(@ToolParam(description = "The context of this question: why are you doing this check and what might you do with the result. For example, what are you describing.", required = true) String questionContext) throws IOException {
         // Return one of: https://github.com/saif-ellafi/play-by-the-writing/blob/main/tables/pum_looks.txt
-        List<String> lines = chatDMDir.getAllLines("oracles/pum_looks.txt");
-        String look = pickRandom(lines);
+        Oracle looks = oracleRegistry.get("pum_looks");
+        String look = looks.randomResult();
         logger.info("Description Looks OracleTools called: {} -> {}", questionContext, look);
         return look;
     }
@@ -133,8 +129,8 @@ public class OracleTools {
             """)
     // @formatter:on
     public String npcMotivation(@ToolParam(description = "The context of this question: why are you doing this check and what might you do with the result.", required = true) String questionContext) throws IOException {
-        List<String> motivations = chatDMDir.getAllLines("oracles/npc_motivations.txt");
-        String motivation = pickRandom(motivations);
+        Oracle motivations = oracleRegistry.get("npc_motivations");
+        String motivation = motivations.randomResult();
         logger.info("Description NPC Motivations OracleTools called: {} -> {}", questionContext, motivation);
         return motivation;
     }
@@ -146,49 +142,44 @@ public class OracleTools {
                                                           """)
     public String namedOracle(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent,
                               @ToolParam(description = "Name of oracle to be used. If you do not know the name of any Oracles, call the EasyChatDM_list_named_oracles tool.") String oracleName) throws IOException {
-
-        Map<String, String> bundles = chatDMDir.loadBundleDir("oracles/named/");
-        if (bundles.containsKey(oracleName)) {
-            List<String> lines = toLines(bundles.get(oracleName));
-            Oracle o = new Oracle(oracleName, "",Map.of(),lines);
-            String answer = o.randomResult();
-            logger.info("Named OracleTools called: {} -> {}", intent, answer);
-            return answer;
+        Oracle namedOracle = oracleRegistry.get(oracleName);
+        if (namedOracle != null) {
+            String result = namedOracle.randomResult();
+            logger.info("Named OracleTools called: {} -> {}", intent, result);
+            return result;
         } else {
+            // TK probably should look at a system property for a default, user supplied value.
             return "(No oracle by that name, make up your own answer based on what Susan Sontag would say.)";
         }
     }
 
     @Tool(name = "EasyChatDM_list_named_oracles", description = """
-            When playing a role playing game, like D&D, it is useful to have Oracles to randomly
-            determine what happens and come up with ideas. This tool gets a list of the named oracle 
-            available, listing the name of the Oracle and how they could be used. Oracles in
-            solo D&D serve as randomized decision-making tools that replace a human Dungeon Master, 
-            allowing lone players to experience unpredictable gameplay. They generate impartial 
-            responses to player questions, create emergent storytelling by introducing unexpected 
-            elements, fill in world details like NPC motivations or location features, 
-            make objective rulings on action success, and maintain game balance through 
-            complications or twists. Ranging from simple yes/no probability tools to 
-            complex tables and random event generators, oracles provide the genuine 
-            surprise and challenge typically supplied by another person. By consulting 
-            these systems at key decision points, solo players can avoid predetermined 
-            outcomes and experience a dynamic narrative that unfolds organically rather 
-            than following a scripted path they'd consciously or unconsciously create themselves.
-            The names of oracles may be vague and if there is not a description available, you 
-            should think on how to interpret them. Lastly, if there other other oracles available that
-            are NOT named, prefer using those. for example, there is a tool called
-            EasyChatDM_NPC_Motivations that you should use instead of a named oracle that
-            determines NPC Motivations. Or not, you decide how crazy you want to be. Use both 
-            and choose which answer is coolest, or most dreadful, depending on the situation.""")
-    public List<String> listNamedOracles(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent) throws IOException {
+                                                                When playing a role playing game, like D&D, it is useful to have Oracles to randomly
+                                                                determine what happens and come up with ideas. This tool gets a list of the named oracle 
+                                                                available, listing the name of the Oracle and how they could be used. Oracles in
+                                                                solo D&D serve as randomized decision-making tools that replace a human Dungeon Master, 
+                                                                allowing lone players to experience unpredictable gameplay. They generate impartial 
+                                                                responses to player questions, create emergent storytelling by introducing unexpected 
+                                                                elements, fill in world details like NPC motivations or location features, 
+                                                                make objective rulings on action success, and maintain game balance through 
+                                                                complications or twists. Ranging from simple yes/no probability tools to 
+                                                                complex tables and random event generators, oracles provide the genuine 
+                                                                surprise and challenge typically supplied by another person. By consulting 
+                                                                these systems at key decision points, solo players can avoid predetermined 
+                                                                outcomes and experience a dynamic narrative that unfolds organically rather 
+                                                                than following a scripted path they'd consciously or unconsciously create themselves.
+                                                                The names of oracles may be vague and if there is not a description available, you 
+                                                                should think on how to interpret them. Lastly, if there other other oracles available that
+                                                                are NOT named, prefer using those. for example, there is a tool called
+                                                                EasyChatDM_NPC_Motivations that you should use instead of a named oracle that
+                                                                determines NPC Motivations. Or not, you decide how crazy you want to be. Use both 
+                                                                and choose which answer is coolest, or most dreadful, depending on the situation.""")
+    public Set<String> listNamedOracles(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent) throws IOException {
 
-        Map<String, String> bundles = chatDMDir.loadBundleDir("oracles/named/");
-        List<String> oracleNames = List.copyOf(bundles.keySet());
+        Set<String> oracleNames = oracleRegistry.listNames();
         logger.info("List OracleTools called with context {} listing oracles {}", intent, oracleNames);
-
         return oracleNames;
     }
-
 
 
     private String pickRandom(List<String> lines) {
@@ -204,14 +195,11 @@ public class OracleTools {
     }
 
     /**
-     * Splits the input string into lines, trims whitespace, filters out empty lines and comments (lines starting with '#'),
-     * and returns a list of cleaned lines.
+     * Splits the input string into lines, trims whitespace, filters out empty lines and comments (lines starting with
+     * '#'), and returns a list of cleaned lines.
      */
     private List<String> toLines(String fileContent) {
-        return fileContent.lines()
-                          .map(String::trim)
-                          .filter(line -> !line.isEmpty() && !line.startsWith("#"))
-                          .toList();
+        return fileContent.lines().map(String::trim).filter(line -> !line.isEmpty() && !line.startsWith("#")).toList();
     }
 
 }
