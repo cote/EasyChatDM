@@ -7,10 +7,7 @@ import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Role playing game Oracles to answer yes/no questions. Based on the <a
@@ -71,27 +68,6 @@ public class OracleTools {
         String answer = pickRandom(answers);
         logger.info("Deterministic OracleTools called: {} -> {}", intent, answer);
         return answer;
-    }
-
-    @Tool(name = "EasyChatDM_NPC_Conversations", description = """
-                                                               Use this oracle to come up with a with conversation topics for NPCs.
-                                                               These could be used to start conversations, if a conversation is stalled out, 
-                                                               to randomly chance the conversations, or whatever you see fit for it.
-                                                               """)
-    public String conversations(
-      // Claude ignores the please below to return long answers, clipping it down to 20 or 30 words instead.
-      // Is that hard-coded/specified somewhere?
-      @ToolParam(description = """
-                               The context of this question: why are you doing this check and what might you do with the result.
-                               Also, provide any history of the conversation and history between the people (like NPC or PC) talking, 
-                               if applicable. And, provide a brief summary of the NPC's state of mind and what they might do next. 
-                               The context must be at least 50 words long, but can be as long as 300 words.
-                               """, required = true) String questionContext) {
-        // Inspired and extended from the Juice OracleTools: https://thunder9861.itch.io/juice-oracle
-        Oracle npcConvos = oracleRegistry.get("npc_conversations");
-        String topic = npcConvos.randomResult();
-        logger.info("Conversations OracleTools called {} -> {}", questionContext, topic);
-        return topic;
     }
 
     /**
@@ -171,11 +147,16 @@ public class OracleTools {
                                                                 EasyChatDM_NPC_Motivations that you should use instead of a named oracle that
                                                                 determines NPC Motivations. Or not, you decide how crazy you want to be. Use both 
                                                                 and choose which answer is coolest, or most dreadful, depending on the situation.""")
-    public Set<String> listNamedOracles(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent) {
+    public Map<String, String> listNamedOracles(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent) {
 
-        Set<String> oracleNames = oracleRegistry.listNames();
-        logger.info("List OracleTools called with context {} listing oracles {}", intent, oracleNames);
-        return oracleNames;
+        Map<String, String> oraclesPairs = new HashMap<>();
+        Collection<Oracle> oracles = oracleRegistry.getAll();
+        for (Oracle oracle : oracles) {
+            oraclesPairs.put(oracle.name(), oracle.description());
+        }
+
+        logger.info("List OracleTools called with context {} listing oracles {}", intent, oraclesPairs);
+        return oraclesPairs;
     }
 
 
