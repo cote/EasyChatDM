@@ -30,11 +30,12 @@ Here is the template, or "recipe" for the adventure:
 
 It should be <Length> long.
 
-Location archetype: {{gum2_setup_location}}.
-Background problems: {{gum2_setup_background}}
-Plot hook: {{gum2_setup_hook}}.
-The mission: {{gum2_setup_mission}}.
-Motivation: {{gum2_setup_motivation}}
-Initial lead: {{gum2_setup_lead}}.
-The opposition: {{gum2_setup_opposition}}.
-Caveat: {{gum2_setup_caveat}}
+Here is a possible outline and items of an adventure:
+Location archetype: {{GUM/gum2_setup_location}}.
+Background problems: {{GUM/gum2_setup_background}}
+Plot hook: {{GUM/gum2_setup_hook}}.
+The mission: {{GUM/gum2_setup_mission}}.
+Motivation: {{GUM/gum2_setup_motivation}}
+Initial lead: {{GUM/gum2_setup_lead}}.
+The opposition: {{GUM/gum2_setup_opposition}}.
+Caveat: {{GUM/gum2_setup_caveat}}
