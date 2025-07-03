@@ -62,15 +62,18 @@ public class ChatDMDir {
      * the <code>.easydm</code> directory, which is set by the property <code>easychatdm.dir</code> and defaults to
      * <code>~/.easychatdm</code>. So, <code>bundleName</code> is just the name of a subdirectory in the easychatdm
      * directory.
-     *
-     * The directory is loaded recurssivly, and you're not allowed to look "up" in the directory structure.
-     * The keys in the returned {@link Map} will be the name of the file and then the relative base directory if the file was
-     * from a subdirctoy. For example, if the file <code>npc_smell.yaml</code> is in the directory
-     * indicated by <code>bundleName</code>, the key will be <code>npc_smell.yaml</code>. If that file
-     * was in the sub-directory "npcs" then the key will be <code>npcs/npc_smell.yaml</code>.
+     * <p>
+     * The directory is loaded recurssivly, and you're not allowed to look "up" in the directory structure. The keys in
+     * the returned {@link Map} will be the name of the file and then the relative base directory if the file was from a
+     * subdirctoy. For example, if the file <code>npc_smell.yaml</code> is in the directory indicated by
+     * <code>bundleName</code>, the key will be <code>npc_smell.yaml</code>. If that file was in the sub-directory
+     * "npcs" then the key will be <code>npcs/npc_smell.yaml</code>.
      *
      * @param bundleName the name of the bundle, like "oracle."
-     * @return a {@link Map} of file name -> contents of file.
+     * @return a {@link Map} of file name -> contents of file. The filename will be the relative path from
+     * <code>bundleName</code>. For example, if <code>bundleName</code> is <code>oracles</code>, all files in that
+     * directory will just be the name. If the file is <code>oracles/food/drinks.txt</code>, the file name will be
+     * <code>food/drinks.txt</code>.
      */
     public Map<String, String> loadBundleDir(String bundleName) {
 
@@ -175,8 +178,8 @@ public class ChatDMDir {
     }
 
     /**
-     * Reads the file from the dmDir. Will throw {@link IllegalArgumentException} if the file is outside the DM Dir.
-     * If the filename ends in <code>.st</code>, the file is assumed to be <a
+     * Reads the file from the dmDir. Will throw {@link IllegalArgumentException} if the file is outside the DM Dir. If
+     * the filename ends in <code>.st</code>, the file is assumed to be <a
      * href="https://github.com/antlr/stringtemplate4/blob/master/doc/introduction.md">a stringtemplate4 file</a> and
      * processed as such.
      *
@@ -192,19 +195,27 @@ public class ChatDMDir {
         Path fullPath = easyChatDir.resolve(fileName);
         logger.debug("Reading file {}", fullPath);
 
-        // check if String Template.
+        // Lots of debugging logging here but that's because ST doesn't give
+        // great error messages.
         String template = Files.readString(fullPath);
-        ST st = new ST(template);
-        // add in any args passed in to use in the template
-        if (args != null) {
-            for (Map.Entry<String, Object> entry : args.entrySet()) {
-                st.add(entry.getKey(), entry.getValue());
-                logger.debug("Added {} to ST {}", entry.getKey(), entry.getValue());
+        logger.debug("Read file {} as {}", fullPath, template);
+        logger.debug("Template args {}", args);
+        try {
+            ST st = new ST(template);
+            // add in any args passed in to use in the template
+            if (args != null) {
+                for (Map.Entry<String, Object> entry : args.entrySet()) {
+                    st.add(entry.getKey(), entry.getValue());
+                    logger.debug("Added {} to ST {}", entry.getKey(), entry.getValue());
+                }
             }
-        }
 
-        logger.debug("Read file {} as ST {}", fullPath, st);
-        return st.render();
+            logger.debug("Read file {} as ST {}", fullPath, st);
+            return st.render();
+        } catch (Exception e) {
+            logger.debug("Error reading bootstrapping prompt from {}. Error {}", fullPath, e);
+            return "Be a creative D&D 5e dungeon master. Do not tell the players things they should not know. Do not " + "take actions for the player's characters. Look at the MCP tools you have available and use them " + "as makes sense.";
+        }
     }
 
     String readFile(Path filename) throws IOException {
@@ -219,7 +230,7 @@ public class ChatDMDir {
      * @throws IOException
      */
     public void writeFile(String fileName,
-                   String content) throws IOException {
+                          String content) throws IOException {
         writeFile(Path.of(fileName), content);
     }
 
@@ -231,7 +242,7 @@ public class ChatDMDir {
      * @throws IOException
      */
     public void writeFile(Path fileName,
-                   String content) throws IOException {
+                          String content) throws IOException {
 
         // Will check for absolute filename and upwards traversal
         // for basic security checks.
