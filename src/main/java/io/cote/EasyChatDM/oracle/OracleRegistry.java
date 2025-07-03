@@ -1,6 +1,7 @@
 package io.cote.EasyChatDM.oracle;
 
 import io.cote.EasyChatDM.ChatDMDir;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -45,9 +46,14 @@ public class OracleRegistry {
     }
 
     /**
-     * Loads the files and makes the Oracles. It will do this each time. This method is package private for testing
-     * reasons.
+     * Loads the files and makes the Oracles. It will do this each time.
+     * This method is package private for testing reasons.
+     *
+     * Warning: It's possible that some oracles will overwrite each other if they have the same names
+     * in their <code>yaml</code> declarations and the filename used for plain text oracles.
+     * This has not been tested.
      */
+    @PostConstruct
     synchronized void init() {
         Map<String, String> oracleFiles = chatDMDir.loadBundleDir("oracles/named/");
         // reset in case this is being called again so that we match the bundle dir.
