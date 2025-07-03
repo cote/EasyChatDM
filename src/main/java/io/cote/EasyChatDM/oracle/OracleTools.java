@@ -1,10 +1,8 @@
-package io.cote.EasyChatDM;
+package io.cote.EasyChatDM.oracle;
 
-import io.cote.EasyChatDM.oracle.Oracle;
-import io.cote.EasyChatDM.oracle.OracleRegistry;
+import io.cote.EasyChatDM.MCPUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;

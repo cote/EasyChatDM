@@ -1,5 +1,6 @@
 package io.cote.EasyChatDM;
 
+import io.cote.EasyChatDM.oracle.OracleTools;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.SpringApplication;
