@@ -7,7 +7,6 @@ import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -87,7 +86,7 @@ public class OracleTools {
                                Also, provide any history of the conversation and history between the people (like NPC or PC) talking, 
                                if applicable. And, provide a brief summary of the NPC's state of mind and what they might do next. 
                                The context must be at least 50 words long, but can be as long as 300 words.
-                               """, required = true) String questionContext) throws IOException {
+                               """, required = true) String questionContext) {
         // Inspired and extended from the Juice OracleTools: https://thunder9861.itch.io/juice-oracle
         Oracle npcConvos = oracleRegistry.get("npc_conversations");
         String topic = npcConvos.randomResult();
@@ -107,7 +106,7 @@ public class OracleTools {
                                                                When you want to determine how something looks use this oracle to give inspiration for 
                                                                detail, appearance, impression, or other things related to a description based on looks. 
                                                                """)
-    public String descriptionLooksOracle(@ToolParam(description = "The context of this question: why are you doing this check and what might you do with the result. For example, what are you describing.", required = true) String questionContext) throws IOException {
+    public String descriptionLooksOracle(@ToolParam(description = "The context of this question: why are you doing this check and what might you do with the result. For example, what are you describing.", required = true) String questionContext)  {
         // Return one of: https://github.com/saif-ellafi/play-by-the-writing/blob/main/tables/pum_looks.txt
         Oracle looks = oracleRegistry.get("pum_looks");
         String look = looks.randomResult();
@@ -126,7 +125,7 @@ public class OracleTools {
             could just take it word for word.
             """)
     // @formatter:on
-    public String npcMotivation(@ToolParam(description = "The context of this question: why are you doing this check and what might you do with the result.", required = true) String questionContext) throws IOException {
+    public String npcMotivation(@ToolParam(description = "The context of this question: why are you doing this check and what might you do with the result.", required = true) String questionContext) {
         Oracle motivations = oracleRegistry.get("npc_motivations");
         String motivation = motivations.randomResult();
         logger.info("Description NPC Motivations OracleTools called: {} -> {}", questionContext, motivation);
@@ -139,7 +138,7 @@ public class OracleTools {
                                                           something,etc.
                                                           """)
     public String namedOracle(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent,
-                              @ToolParam(description = "Name of oracle to be used. If you do not know the name of any Oracles, call the EasyChatDM_list_named_oracles tool.") String oracleName) throws IOException {
+                              @ToolParam(description = "Name of oracle to be used. If you do not know the name of any Oracles, call the EasyChatDM_list_named_oracles tool.") String oracleName) {
         Oracle namedOracle = oracleRegistry.get(oracleName);
         if (namedOracle != null) {
             String result = namedOracle.randomResult();
@@ -172,7 +171,7 @@ public class OracleTools {
                                                                 EasyChatDM_NPC_Motivations that you should use instead of a named oracle that
                                                                 determines NPC Motivations. Or not, you decide how crazy you want to be. Use both 
                                                                 and choose which answer is coolest, or most dreadful, depending on the situation.""")
-    public Set<String> listNamedOracles(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent) throws IOException {
+    public Set<String> listNamedOracles(@ToolParam(description = MCPUtils.INTENT_DESCRIPTION) String intent) {
 
         Set<String> oracleNames = oracleRegistry.listNames();
         logger.info("List OracleTools called with context {} listing oracles {}", intent, oracleNames);
