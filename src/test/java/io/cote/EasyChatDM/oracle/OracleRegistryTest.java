@@ -39,9 +39,9 @@ public class OracleRegistryTest {
         String oracleTwo = "Tea\nAle\nCoffee\nWater\nWine";
         String oracleThree = "Troll\nOgre\nHill Giant\nBronze Dragon";
 
-        chatDMDir.writeFile(Path.of("oracles/named/", "npc_emotions.txt"), oracleOne);
+        chatDMDir.writeFile(Path.of("oracles/", "npc_emotions.txt"), oracleOne);
         chatDMDir.writeFile(Path.of("oracles/named/", "drinks.txt"), oracleTwo);
-        chatDMDir.writeFile(Path.of("oracles/named/", "monsters.txt"), oracleThree);
+        chatDMDir.writeFile(Path.of("oracles/", "monsters.txt"), oracleThree);
 
         // The yaml file
         String npcMood = """
@@ -75,7 +75,7 @@ public class OracleRegistryTest {
 
         // test the plain text
         assertThat(oracleRegistry.get("npc_emotions")).isNotNull().withFailMessage("Should have npc_emotions oracle.");
-        assertThat(oracleRegistry.get("drinks")).isNotNull().withFailMessage("Should have npc_emotions oracle.");
+        assertThat(oracleRegistry.get("named/drinks")).isNotNull().withFailMessage("Should have npc_emotions oracle.");
         assertThat(oracleRegistry.get("monsters")).isNotNull().withFailMessage("Should have npc_emotions oracle.");
 
         Oracle npcEmotions = oracleRegistry.get("npc_emotions");
@@ -83,7 +83,7 @@ public class OracleRegistryTest {
         npcEmotions.results().containsAll(List.of("Sad", "Happy", "Mad", "Bored"));
 
         // We don't test the exact values, just that they exist
-        Oracle drinks = oracleRegistry.get("drinks");
+        Oracle drinks = oracleRegistry.get("named/drinks");
         assertThat(drinks.results().size()).isEqualTo(5);
 
         Oracle monsters = oracleRegistry.get("monsters");
