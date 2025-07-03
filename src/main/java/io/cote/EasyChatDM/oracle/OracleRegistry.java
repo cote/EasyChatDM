@@ -36,7 +36,7 @@ public class OracleRegistry {
         return Collections.unmodifiableSet(oracles.keySet());
     }
 
-    public Collection<Oracle> listAll() {
+    public Collection<Oracle> getAll() {
         return Collections.unmodifiableCollection(oracles.values());
     }
 
