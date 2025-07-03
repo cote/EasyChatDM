@@ -57,7 +57,7 @@ public class AdventureMCPPrompt {
                 the DM Journal so that you can remember it for later.
                 """;
 
-              // Make sure we have ExtraInfo args
+              // Make sure we have Length args
               // otherwise ST throws up.
               var fixedArgs = new HashMap<>(
                 request.arguments());
