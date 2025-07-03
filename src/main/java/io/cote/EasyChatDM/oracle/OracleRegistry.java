@@ -55,7 +55,7 @@ public class OracleRegistry {
      */
     @PostConstruct
     synchronized void init() {
-        Map<String, String> oracleFiles = chatDMDir.loadBundleDir("oracles/named/");
+        Map<String, String> oracleFiles = chatDMDir.loadBundleDir("oracles/");
         // reset in case this is being called again so that we match the bundle dir.
         oracles = new HashMap<>();
         for (Map.Entry<String, String> entry : oracleFiles.entrySet()) {
@@ -68,13 +68,14 @@ public class OracleRegistry {
 
                     Oracle oracle = parseST(oracleName, fileContent, null);
                     oracles.put(oracleName, oracle);
-                    logger.info("Loaded oracle: {}", oracleName);
+                    logger.info("Loaded oracle from .txt or .st: {}", oracleName);
 
                 } else if (fileName.endsWith(".yaml") || fileName.endsWith(".yml")) {
                     List<Oracle> parsedOracles = parseYaml(fileContent);
 
                     for (Oracle oracle : parsedOracles) {
                         oracles.put(oracle.name(), oracle);
+                        logger.info("Loaded oracle from yaml: {}", oracle.name());
                     }
                 }
             } catch (Exception e) {
