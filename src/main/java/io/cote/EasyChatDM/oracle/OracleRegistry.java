@@ -29,19 +29,19 @@ public class OracleRegistry {
      * @param name name of the Oracle.
      * @return the Oracle, or null if it does not exist.
      */
-    public Oracle get(String name) {
+    Oracle get(String name) {
         return oracles.get(name);
     }
 
-    public Set<String> listNames() {
+    Set<String> listNames() {
         return Collections.unmodifiableSet(oracles.keySet());
     }
 
-    public Collection<Oracle> getAll() {
+    Collection<Oracle> getAll() {
         return Collections.unmodifiableCollection(oracles.values());
     }
 
-    public int size() {
+    int size() {
         return oracles.size();
     }
 
