@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +109,52 @@ public class ChatDMDir {
     }
 
     /**
+     * Loads the contents of the file passed in.
+     * @param file the relative path to the file desired. This cannot be an absolute
+     *             path or {@link IllegalArgumentException} will be thrown.
+     * @return the contents of the file, or null if the file does not exist
+     * or errors out.
+     */
+    public String loadContents(Path file) throws IOException
+    {
+       throwIfInvalidFile(file);
+
+       return readFile(file);
+    }
+
+    /**
+     * Convenience method for {@link #loadContents(Path)}
+     */
+    public String loadContents(String file) throws IOException
+    {
+        return loadContents(Path.of(file));
+    }
+
+    public List<String> listFiles(String subdir) {
+        Path subdirPath = Path.of(subdir);
+        throwIfInvalidFile(subdirPath);
+        Path fullSubdir = easyChatDir.resolve(subdirPath);
+
+        if (!Files.isDirectory(fullSubdir)) {
+            logger.warn("Requested listFiles on non-directory path: {}", fullSubdir);
+            return Collections.emptyList();
+        }
+
+        List<String> result = new ArrayList<>();
+        try {
+            Files.walk(fullSubdir).forEach(p -> {
+                if (Files.isRegularFile(p) && acceptedFileFormat(p.getFileName().toString())) {
+                    result.add(fullSubdir.relativize(p).toString());
+                }
+            });
+        } catch (IOException e) {
+            logger.error("Failed to list files in directory {}", fullSubdir, e);
+        }
+
+        return result;
+    }
+
+    /**
      * Returns the filename without its extension. It will only remove the <i>last</i> part of the string that starts
      * with a period.
      *
@@ -121,7 +168,7 @@ public class ChatDMDir {
 
     private boolean acceptedFileFormat(String filename) {
         return (filename.endsWith(".txt") || filename.endsWith(".yaml") || filename.endsWith(
-          ".yml") || filename.endsWith(".st"));
+          ".yml") || filename.endsWith(".st") || filename.endsWith(".json"));
     }
 
     /**
@@ -214,12 +261,14 @@ public class ChatDMDir {
             return st.render();
         } catch (Exception e) {
             logger.debug("Error reading bootstrapping prompt from {}. Error {}", fullPath, e);
-            return "Be a creative D&D 5e dungeon master. Do not tell the players things they should not know. Do not " + "take actions for the player's characters. Look at the MCP tools you have available and use them " + "as makes sense.";
+            return "";
         }
     }
 
     String readFile(Path filename) throws IOException {
-        return readSTFile(filename, Map.of());
+        throwIfInvalidFile(filename);
+        Path fullPath = easyChatDir.resolve(filename);
+        return Files.readString(fullPath);
     }
 
     /**
