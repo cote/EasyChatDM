@@ -19,7 +19,7 @@ public class OracleRegistry {
 
     private final ChatDMDir chatDMDir;
 
-    public OracleRegistry(ChatDMDir chatDMDir) {
+    OracleRegistry(ChatDMDir chatDMDir) {
         this.chatDMDir = chatDMDir;
     }
 
