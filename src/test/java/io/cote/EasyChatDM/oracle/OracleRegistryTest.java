@@ -1,12 +1,9 @@
 package io.cote.EasyChatDM.oracle;
 
-import io.cote.EasyChatDM.ChatDMDir;
+
+import io.cote.EasyChatDM.TestThatUsesChatDMDir;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,20 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class OracleRegistryTest {
-
-    @TempDir
-    static Path tempDir;
-
-    @Autowired
-    private ChatDMDir chatDMDir;
-
-    // make sure we're using the test's tempdir.
-    @DynamicPropertySource
-    static void overrideProperties(DynamicPropertyRegistry registry) {
-        registry.add("easychatdm.dir", () -> tempDir.toString());
-    }
-
+public class OracleRegistryTest extends TestThatUsesChatDMDir {
 
     @Test
     public void testOracleLoading() throws IOException {
@@ -39,9 +23,9 @@ public class OracleRegistryTest {
         String oracleTwo = "Tea\nAle\nCoffee\nWater\nWine";
         String oracleThree = "Troll\nOgre\nHill Giant\nBronze Dragon";
 
-        chatDMDir.writeFile(Path.of("oracles/", "npc_emotions.txt"), oracleOne);
-        chatDMDir.writeFile(Path.of("oracles/named/", "drinks.txt"), oracleTwo);
-        chatDMDir.writeFile(Path.of("oracles/", "monsters.txt"), oracleThree);
+        chatDMDir().writeFile(Path.of("oracles/", "npc_emotions.txt"), oracleOne);
+        chatDMDir().writeFile(Path.of("oracles/named/", "drinks.txt"), oracleTwo);
+        chatDMDir().writeFile(Path.of("oracles/", "monsters.txt"), oracleThree);
 
         // The yaml file
         String npcMood = """
@@ -63,15 +47,16 @@ public class OracleRegistryTest {
                              - Happy
                              - Ecstatic
                          """;
-        chatDMDir.writeFile(Path.of("oracles/named/", "npc_mood.yml"), npcMood);
+
+        chatDMDir().writeFile(Path.of("oracles/named/", "npc_mood.yml"), npcMood);
 
         // Should be testing Spring doing all of this, but it's annoying
         // to control when the files above are made, so we'll compromise
         // and do it manually here.
-        OracleRegistry oracleRegistry = new OracleRegistry(chatDMDir);
+        OracleRegistry oracleRegistry = new OracleRegistry(chatDMDir());
         oracleRegistry.init();
 
-        assertThat(oracleRegistry.size()).isEqualTo(4).withFailMessage("Should have 3 oracles.");
+        assertThat(oracleRegistry.size()).isEqualTo(4).withFailMessage("Should have 4 oracles.");
 
         // test the plain text
         assertThat(oracleRegistry.get("npc_emotions")).isNotNull().withFailMessage("Should have npc_emotions oracle.");

@@ -28,7 +28,7 @@ public class OracleTools {
 
     // Tool name cannot have spaces. Start EasyChatDM to make searching logs easier.
     // Can't use & in MCP, so we type DnD instead of D&D
-    @Tool(name = "EasyChatDM_Deterministic_Oracle", description = """
+    @Tool(name = "EasyChatDM_Deterministic_Yes_No_Oracle", description = """
                                                                   When playing Dungeons and Dragons (DnD), use this oracle tool to determine straight forward yes/no questions.
                                                                   Deterministic answers are useful when you need a concrete response to move forward in the game.
                                                                   The answers are on a gradient from strong no, no, weak no, weak yes, yes, and strong yes.
@@ -49,13 +49,13 @@ public class OracleTools {
         return Map.of("deterministic oracle answer", answer);
     }
 
-    @Tool(name = "EasyChatDM_Subjective_Oracle", description = """
+    @Tool(name = "EasyChatDM_Subjective_Yes_No_Oracle", description = """
                                                                When playing Dungeons and Dragons (DnD), use this oracle tool to determine 
                                                                open ended questions that can lead to unexpected plot points. You should 
                                                                determine an interpretation of the answer rather than having it be a clear, 
                                                                binary yes or no. The answers may be clear ("yes" or "no"), or they may
                                                                lead to more details. For example, "No, not yet..." might mean an action
-                                                               will happen in the future, perhpas because the player triggered it, or not.
+                                                               will happen in the future, perhaps because the player triggered it, or not.
                                                                "It depends..." might mean the player needs to take some action or perform
                                                                a skills check. For example, your PCs may not yet be ready to know the answer 
                                                                at all, and need to figure out another way to find an answer, or it might 

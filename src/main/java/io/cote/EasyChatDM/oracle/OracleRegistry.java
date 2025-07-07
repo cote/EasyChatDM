@@ -4,6 +4,7 @@ import io.cote.EasyChatDM.ChatDMDir;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.stringtemplate.v4.ST;
 import org.yaml.snakeyaml.Yaml;
@@ -11,7 +12,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.util.*;
 
 @Service
-public class OracleRegistry {
+class OracleRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(OracleRegistry.class);
 
@@ -31,10 +32,6 @@ public class OracleRegistry {
      */
     Oracle get(String name) {
         return oracles.get(name);
-    }
-
-    Set<String> listNames() {
-        return Collections.unmodifiableSet(oracles.keySet());
     }
 
     Collection<Oracle> getAll() {
@@ -120,7 +117,7 @@ public class OracleRegistry {
         return new Oracle(oracleName, "", Map.of(), lines);
     }
 
-    private List<Oracle> parseYaml(String yamlContent) {
+    private List<Oracle> parseYaml(@NonNull String yamlContent) {
         List<Oracle> oracles = new ArrayList<>();
         Yaml yaml = new Yaml();
         Map<String, Object> map = yaml.load(yamlContent);
