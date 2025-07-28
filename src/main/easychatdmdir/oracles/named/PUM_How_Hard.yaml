@@ -1,5 +1,7 @@
 "PUM_How_Hard":
-  description: Use this oracle to randomly determine how difficult a task is.
+  description: >
+    Use this oracle to randomly randomly determine how difficult a task is, 
+    for example, the DC level for a skills check.
   type: oracle
   author: Plot Unfolding Machine, v8, JeansenVaars
   version: 1.0
