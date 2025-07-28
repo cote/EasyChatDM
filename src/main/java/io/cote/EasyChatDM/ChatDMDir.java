@@ -58,6 +58,11 @@ public class ChatDMDir {
         logger.debug("EasyChatDM dir is {}", easyChatDir);
     }
 
+//    String listBundleFiles(String bundleName)
+//    {
+//
+//    }
+
     /**
      * Get the files for a "bundle." The "bundle" could be things like oracles, prompts, etc. The bundles are kept in
      * the <code>.easydm</code> directory, which is set by the property <code>easychatdm.dir</code> and defaults to
@@ -313,6 +318,9 @@ public class ChatDMDir {
      * @return the
      */
     Path getChatDMDir() {
+        // TK need to think about this for security. Probably
+        // should make sure it's a relaive path only so it doesn't
+        // give up info above the chatDMDir, or just not return a Path at all.
         return easyChatDir;
     }
 
