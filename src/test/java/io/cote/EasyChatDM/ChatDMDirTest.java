@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,7 +24,9 @@ class ChatDMDirTest extends TestThatUsesChatDMDir {
     @Value("${easychatdm.dir}")
     private Path actualChatDMDir;
 
-    protected Path getActualChatDMDir() { return actualChatDMDir; }
+    protected Path getActualChatDMDir() {
+        return actualChatDMDir;
+    }
 
     @Autowired
     private ChatDMDir chatDMDir;
@@ -149,5 +149,33 @@ class ChatDMDirTest extends TestThatUsesChatDMDir {
 
     }
 
+    @Test
+    void testClasspathLoading() throws IOException {
+        // the ChatDMDir should check for files in the classpath first
+        // and then, if the files are in the file system, override that
+        // default from the classpath.
+
+        // First test with single, known file.
+
+        String classpathShopsOracle = chatDMDir().loadContents("oracles/shops.txt");
+        assertThat(classpathShopsOracle).isNotNull().withFailMessage(
+          "Should have oracles/shops.txt oracle from classpath.");
+
+        String overrideOracle = "Magic Shop\nWine Shop\nArmory\nBook Shop";
+
+        chatDMDir().writeFile(Path.of("oracles/", "shops.txt"), overrideOracle);
+
+        String overrideOracleFromFiles = chatDMDir().loadContents("oracles/shops.txt");
+        assertThat(overrideOracleFromFiles).isEqualTo(overrideOracle).withFailMessage(
+          "Did not load Oracle from file system");
+
+        assertThat(overrideOracleFromFiles).isNotEqualTo(classpathShopsOracle).withFailMessage(
+          "Oracle from classpath and file should not be equal. File system should overwrite classpath.");
+
+        // Test for loading all files in a bundle.
+        // We've overwritten one shops.txt, so we should just see two.
+        Map<String, String> files = chatDMDir().loadBundleDir("oracles/");
+        assertThat(files).withFailMessage("Incorrect number of oracles: " + files.size()).hasSize(14);
+    }
 
 }

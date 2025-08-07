@@ -4,6 +4,9 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.stringtemplate.v4.ST;
 
@@ -11,15 +14,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Manages file access for the EasyChatDM.
+ * Manages file access for the EasyChatDM. Files are loaded first from the classpath in the path <code>chatdmdir</code>.
+ * If a local chatdmdir exists, files using the same path will be loaded and overwrite the default files.
  */
 @Service
 public class ChatDMDir {
@@ -28,10 +29,19 @@ public class ChatDMDir {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatDMDir.class);
 
-    @Value("${easychatdm.dir:${user.dir}/.easychatdm}")
-    private String dirProperty;
+    private final Path filePathDir;
 
-    private Path easyChatDir;
+    private final Path classpathDir;
+
+    /**
+     * @param baseResource the location of the chatdmdir in the filesystem.
+     * @throws IOException
+     */
+    public ChatDMDir(@Value("file:${easychatdm.dir:${user.dir}/.easychatdm}") Resource baseResource) throws IOException {
+        this.filePathDir = baseResource.getFile().toPath();
+        this.classpathDir = new ClassPathResource("chatdmdir/").getFile().toPath();
+    }
+
 
     /**
      * Checks if a path contains any directory traversal elements.
@@ -52,16 +62,11 @@ public class ChatDMDir {
 
     @PostConstruct
     private void init() throws IOException {
-        easyChatDir = Path.of(dirProperty);
-        // ensure it exists
-        Files.createDirectories(easyChatDir);
-        logger.debug("EasyChatDM dir is {}", easyChatDir);
-    }
 
-//    String listBundleFiles(String bundleName)
-//    {
-//
-//    }
+        // ensure it exists
+        Files.createDirectories(filePathDir);
+        logger.debug("EasyChatDM dir is {}", filePathDir);
+    }
 
     /**
      * Get the files for a "bundle." The "bundle" could be things like oracles, prompts, etc. The bundles are kept in
@@ -69,10 +74,10 @@ public class ChatDMDir {
      * <code>~/.easychatdm</code>. So, <code>bundleName</code> is just the name of a subdirectory in the easychatdm
      * directory.
      * <p>
-     * The directory is loaded recurssivly, and you're not allowed to look "up" in the directory structure. The keys in
+     * The directory is loaded recursively, and you're not allowed to look "up" in the directory structure. The keys in
      * the returned {@link Map} will be the name of the file and then the relative base directory if the file was from a
-     * subdirctoy. For example, if the file <code>npc_smell.yaml</code> is in the directory indicated by
-     * <code>bundleName</code>, the key will be <code>npc_smell.yaml</code>. If that file was in the sub-directory
+     * subdirectory. For example, if the file <code>npc_smell.yaml</code> is in the directory indicated by
+     * <code>bundleName</code>, the key will be <code>npc_smell.yaml</code>. If that file was in the subdirectory
      * "npcs" then the key will be <code>npcs/npc_smell.yaml</code>.
      *
      * @param bundleName the name of the bundle, like "oracle."
@@ -81,12 +86,12 @@ public class ChatDMDir {
      * directory will just be the name. If the file is <code>oracles/food/drinks.txt</code>, the file name will be
      * <code>food/drinks.txt</code>.
      */
+    @NonNull
     public Map<String, String> loadBundleDir(String bundleName) {
 
         Path bundleDirFragment = Path.of(bundleName);
         throwIfInvalidFile(bundleDirFragment);
-        Path bundleDir = easyChatDir.resolve(bundleDirFragment);
-        throwIfInvalidFile(bundleDirFragment);
+        Path bundleDir = filePathDir.resolve(bundleDirFragment);
         logger.debug("bundle dir is now {}", bundleDir);
         if (!Files.isDirectory(bundleDir)) {
             logger.debug("bundle dir {} does not exist or is not a directory", bundleDir);
@@ -94,7 +99,20 @@ public class ChatDMDir {
         }
 
         // All good!
+        Map<String, String> files = new HashMap<>();
 
+        // first load from the classpath, the defaults
+
+        files.putAll(getFileMap(classpathDir.resolve(bundleDirFragment)));
+
+        // then load from the file system, overriding any defaults
+        // from the classpath
+        files.putAll(getFileMap(bundleDir));
+
+        return files;
+    }
+
+    private Map<String, String> getFileMap(Path bundleDir) {
         try (Stream<Path> paths = Files.walk(bundleDir)) {
             return paths.filter(Files::isRegularFile).filter(
               p -> acceptedFileFormat(p.getFileName().toString())).collect(
@@ -110,35 +128,31 @@ public class ChatDMDir {
             logger.error("Returning empty listing. Failed to read from bundle directory {}", bundleDir, e);
             return Collections.emptyMap();
         }
-
     }
 
     /**
      * Loads the contents of the file passed in.
-     * @param file the relative path to the file desired. This cannot be an absolute
-     *             path or {@link IllegalArgumentException} will be thrown.
-     * @return the contents of the file, or null if the file does not exist
-     * or errors out.
+     *
+     * @param file the relative path to the file desired. This cannot be an absolute path or
+     *             {@link IllegalArgumentException} will be thrown.
+     * @return the contents of the file, or null if the file does not exist or errors out.
      */
-    public String loadContents(Path file) throws IOException
-    {
-       throwIfInvalidFile(file);
-
-       return readFile(file);
+    public String loadContents(Path file) throws IOException {
+        throwIfInvalidFile(file);
+        return readFile(file);
     }
 
     /**
      * Convenience method for {@link #loadContents(Path)}
      */
-    public String loadContents(String file) throws IOException
-    {
+    public String loadContents(String file) throws IOException {
         return loadContents(Path.of(file));
     }
 
     public List<String> listFiles(String subdir) {
         Path subdirPath = Path.of(subdir);
         throwIfInvalidFile(subdirPath);
-        Path fullSubdir = easyChatDir.resolve(subdirPath);
+        Path fullSubdir = filePathDir.resolve(subdirPath);
 
         if (!Files.isDirectory(fullSubdir)) {
             logger.warn("Requested listFiles on non-directory path: {}", fullSubdir);
@@ -201,7 +215,7 @@ public class ChatDMDir {
         throwIfInvalidFile(fileName);
 
         // Now we can try the full path.
-        Path fullPath = easyChatDir.resolve(fileName);
+        Path fullPath = filePathDir.resolve(fileName);
 
         if (Files.isDirectory(fullPath)) {
             // isDirectory checks for directory existence as well.
@@ -244,7 +258,7 @@ public class ChatDMDir {
 
         throwIfInvalidFile(fileName);
         // all good
-        Path fullPath = easyChatDir.resolve(fileName);
+        Path fullPath = filePathDir.resolve(fileName);
         logger.debug("Reading file {}", fullPath);
 
         // Lots of debugging logging here but that's because ST doesn't give
@@ -272,8 +286,15 @@ public class ChatDMDir {
 
     String readFile(Path filename) throws IOException {
         throwIfInvalidFile(filename);
-        Path fullPath = easyChatDir.resolve(filename);
-        return Files.readString(fullPath);
+        Path fullPath = filePathDir.resolve(filename);
+
+        if (Files.exists(fullPath)) {
+            return Files.readString(fullPath);
+        } else {
+            return Files.readString(classpathDir.resolve(filename));
+        }
+
+
     }
 
     /**
@@ -303,7 +324,7 @@ public class ChatDMDir {
         throwIfInvalidFile(fileName);
 
         // Now we can try the full path.
-        Path fullPath = easyChatDir.resolve(fileName);
+        Path fullPath = filePathDir.resolve(fileName);
 
         // make sure the directories exist.
         Files.createDirectories(fullPath.getParent());
@@ -321,7 +342,7 @@ public class ChatDMDir {
         // TK need to think about this for security. Probably
         // should make sure it's a relaive path only so it doesn't
         // give up info above the chatDMDir, or just not return a Path at all.
-        return easyChatDir;
+        return filePathDir;
     }
 
     private void throwIfInvalidFile(Path fileName) {
@@ -330,7 +351,7 @@ public class ChatDMDir {
         // (2) We only want files, not directories.
         if (fileName.isAbsolute()) {
             throw new IllegalArgumentException(
-              String.format("File name must be relative to chatdmdir", easyChatDir, fileName));
+              String.format("File name must be relative to chatdmdir", filePathDir, fileName));
         } else if (containsUpwardTraversal(fileName)) {
             throw new IllegalArgumentException("File name cannot contain upward traversal: " + fileName);
         }
