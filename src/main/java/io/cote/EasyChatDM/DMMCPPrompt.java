@@ -24,13 +24,13 @@ public class DMMCPPrompt {
     private static final Path STARTUP_PROMPT_FILE_PATH = Path.of("prompts/dm_startup.st");
 
     private static final String DEFAULT_PROMPT = """
-                                                You are a Dungeons and Dragons DM, following D&D 5th edition rules.
-                                                The player has complete control over their character's actions.
-                                                Be inventive and fun, follow the rules, and follow the rule of cool.
-                                                Limit responses to three or less sentences unless directed otherwise.
-                                                You likely have access to several MCP tools, resources, and prompts.
-                                                Asses what you have and use them wisely, not excessively. 
-                                                """;
+            You are a Dungeons and Dragons DM, following D&D 5th edition rules.
+            The player has complete control over their character's actions.
+            Be inventive and fun, follow the rules, and follow the rule of cool.
+            Limit responses to three or less sentences unless directed otherwise.
+            You likely have access to several MCP tools, resources, and prompts.
+            Asses what you have and use them wisely, not excessively. 
+            """;
 
     public DMMCPPrompt(ChatDMDir chatDMDir) {
         this.chatDMDir = chatDMDir;
@@ -42,26 +42,20 @@ public class DMMCPPrompt {
         // @formatter:off
         // This is the prompt that will be shown to the MCP Client (LLM),
         // listing the name, purpose, and two arguments
-        // for passing in context and extra information to add to the
+        // for passing in context and extra information to add to
         // the text given back to the MCP Client
         var prompt = new Prompt(
-                "DM_Startup_Prompt",
+                "DM Startup Prompt",
            """
-                     This prompt gives instructions to the Chat DM AI for how to  
-                     become, behave, and play as a Dungeons and Dragons DM. These instructions 
+                     This prompt gives instructions to the Chat DM AI for how to \
+                     become, behave, and play as a Dungeons and Dragons DM. These instructions \
                      should be followed carefully and followed.
                      """,
            List.of(
-                   new PromptArgument("intent",
-                                                MCPUtils.INTENT_DESCRIPTION,
-                                        false),
                    new PromptArgument(
                            "ExtraInfo",
-                           """
-                                     Extra instructions given by the player about  
-                                     how they'd like to play, ongoing information, 
-                                     or anything they'd like the ChatDM to know. 
-                                     """, false)
+                           "Anything you (the PC) want to tell the ChatDM.",
+                           false)
                    ));
 
         // Build the prompt specification, including the return functionality.
