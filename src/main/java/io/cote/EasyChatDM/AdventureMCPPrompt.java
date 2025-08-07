@@ -27,13 +27,11 @@ public class AdventureMCPPrompt {
     @Bean
     List<McpServerFeatures.SyncPromptSpecification> adventurePrompt() {
         // @formatter:off
-        Prompt prompt = new Prompt("adventure_maker", """
-                This is a prompt that will give you a template for creating an adventure.
-                Follow the instructions in it carefully
+        Prompt prompt = new Prompt("Adventure Maker",
+                """
+            This is a prompt that will give you a template for creating an adventure. \
+            Follow the instructions in it carefully
                 """, List.of(
-          new McpSchema.PromptArgument("intent",
-                                       MCPUtils.INTENT_DESCRIPTION,
-                                       false),
           new McpSchema.PromptArgument(
             "Length",
             """
@@ -41,21 +39,20 @@ public class AdventureMCPPrompt {
                       """, true)
         ));
 
-
-        // Build the prompt specificatio, including the return functionality.
+        // Build the prompt specification, including the return functionality.
         var syncPromptSpecification = new McpServerFeatures.SyncPromptSpecification(
           prompt,
           (exchange, request) ->
           {
               String promptText =
                 """
-                No adventure was found, so make one up based on a NPC leaving a bag of something
-                and a note next to the NPC, either outside their door, at their table, or just
-                throwing it at their feet. Be creative and don't use cliches. Use any oracles you
-                have to build up parts of your adventure, and remember to NOT share the adventure's
-                outline with the player. You should also note an outline of your adventure in
-                the DM Journal so that you can remember it for later.
-                """;
+            No adventure was found, so make one up based on a NPC leaving a bag of something
+            and a note next to the NPC, either outside their door, at their table, or just
+            throwing it at their feet. Be creative and don't use cliches. Use any oracles you
+            have to build up parts of your adventure, and remember to NOT share the adventure's
+            outline with the player. You should also note an outline of your adventure in
+            the DM Journal so that you can remember it for later.
+            """;
 
               // Make sure we have Length args
               // otherwise ST throws up.
