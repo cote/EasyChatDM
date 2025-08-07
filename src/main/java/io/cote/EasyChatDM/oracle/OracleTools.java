@@ -74,7 +74,7 @@ public class OracleTools {
 
     /**
      * An oracle that gives inspiration for how something looks. The list of options of loaded from the resource
-     * /oracle_tables/pum_looks.txt which is based on the PUM description/looks table, found <a
+     * /oracle/looks.txt which is inspired by the PUM description/looks table, found <a
      * href="https://github.com/saif-ellafi/play-by-the-writing/blob/main/tables/pum_looks.txt">here</a> as plain text.
      *
      * @param questionContext
@@ -88,8 +88,7 @@ public class OracleTools {
         The context of this question: why are you doing this check and 
         what might you do with the result. For example, what are you describing.
         """, required = true) String questionContext)  {
-        // Return one of: https://github.com/saif-ellafi/play-by-the-writing/blob/main/tables/pum_looks.txt
-        Oracle looks = oracleRegistry.get("pum_looks");
+        Oracle looks = oracleRegistry.get("looks");
         String look = looks.randomResult();
         logger.info("Description Looks OracleTools called: {} -> {}", questionContext, look);
         return look;
