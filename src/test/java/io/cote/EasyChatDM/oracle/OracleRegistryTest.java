@@ -23,9 +23,9 @@ public class OracleRegistryTest extends TestThatUsesChatDMDir {
         String oracleTwo = "Tea\nAle\nCoffee\nWater\nWine";
         String oracleThree = "Troll\nOgre\nHill Giant\nBronze Dragon";
 
-        chatDMDir().writeFile(Path.of("oracles/", "npc_emotions.txt"), oracleOne);
-        chatDMDir().writeFile(Path.of("oracles/named/", "drinks.txt"), oracleTwo);
-        chatDMDir().writeFile(Path.of("oracles/", "monsters.txt"), oracleThree);
+        chatDMDir().writeFile(Path.of("chatdmdir/", "npc_emotions.txt"), oracleOne);
+        chatDMDir().writeFile(Path.of("chatdmdir/named/", "drinks.txt"), oracleTwo);
+        chatDMDir().writeFile(Path.of("chatdmdir/", "monsters.txt"), oracleThree);
 
         // The yaml file
         String npcMood = """
@@ -48,7 +48,7 @@ public class OracleRegistryTest extends TestThatUsesChatDMDir {
                              - Ecstatic
                          """;
 
-        chatDMDir().writeFile(Path.of("oracles/named/", "npc_mood.yml"), npcMood);
+        chatDMDir().writeFile(Path.of("chatdmdir/named/", "npc_mood.yml"), npcMood);
 
         // Should be testing Spring doing all of this, but it's annoying
         // to control when the files above are made, so we'll compromise
