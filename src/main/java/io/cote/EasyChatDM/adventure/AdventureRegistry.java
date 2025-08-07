@@ -28,28 +28,20 @@ public class AdventureRegistry {
     }
 
     void saveAdventure(Adventure adventure) throws IOException {
-        String filePath = makeAdventureFileName(sanitizeFilename(adventure.name()));
+        String filePath = makeAdventureFileName(adventure.name());
         chatDMDir.writeFile(filePath, objectMapper.writeValueAsString(adventure));
         logger.debug("Saved adventure to {}", filePath);
     }
 
     Adventure loadAdventure(String adventureName) throws IOException {
-        String filePath = makeAdventureFileName(sanitizeFilename(adventureName));
+        String filePath = makeAdventureFileName(adventureName);
         String adventureContents = chatDMDir.loadContents(filePath);
         Adventure adventure = objectMapper.readValue(adventureContents, Adventure.class);
         logger.info("Loaded adventure from {}", filePath);
         return adventure;
     }
 
-    static String sanitizeFilename(String input) {
-        if (input == null) return "";
-        input = input.trim();
-        // Replace all whitespace and punctuation with underscores
-        String result = input.replaceAll("[\\s\\p{Punct}]+", "_");
-        // Remove any non-word characters (e.g., emojis, symbols) except underscore
-        result = result.replaceAll("[^\\w_]", "");
-        return result.toLowerCase();
-    }
+
 
     List<Adventure> loadAllAdventures() throws IOException {
         //        Path adventureDir = chatDMDir.resolve("adventures");
@@ -75,8 +67,18 @@ public class AdventureRegistry {
         return null;
     }
 
+    // weird method visiblity to allow for easier testing.
+    protected static String sanitizeFilename(String input) {
+        if (input == null) return "";
+        input = input.trim();
+        // Replace all whitespace and punctuation with underscores
+        String result = input.replaceAll("[\\s\\p{Punct}]+", "_");
+        // Remove any non-word characters (e.g., emojis, symbols) except underscore
+        result = result.replaceAll("[^\\w_]", "");
+        return result.toLowerCase();
+    }
     private String makeAdventureFileName(@NonNull String adventureName) {
-        return "adventures/" + adventureName + ".json";
+        return "adventures/" + sanitizeFilename(adventureName) + ".json";
     }
 
 }
