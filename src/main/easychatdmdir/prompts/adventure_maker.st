@@ -30,7 +30,9 @@ Here is the template, or "recipe" for the adventure:
 
 It should be <Length> long.
 
-Here is a possible outline and items of an adventure:
+Here is a possible outline and items of an adventure.
+Items in the curly braces are named Oracles you might have:
+
 Location archetype: {{GUM/gum2_setup_location}}.
 Background problems: {{GUM/gum2_setup_background}}
 Plot hook: {{GUM/gum2_setup_hook}}.
@@ -39,3 +41,5 @@ Motivation: {{GUM/gum2_setup_motivation}}
 Initial lead: {{GUM/gum2_setup_lead}}.
 The opposition: {{GUM/gum2_setup_opposition}}.
 Caveat: {{GUM/gum2_setup_caveat}}
+
+Once you create this adventure, spend some time thinking more about it.
